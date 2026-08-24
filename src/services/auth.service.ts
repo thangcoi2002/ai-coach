@@ -14,35 +14,39 @@ export type Session = {
   user: AuthUser;
 };
 
-export const MOCK_EMAIL = 'test@aicoach.dev';
-export const MOCK_PASSWORD = '123456';
+/** Any 6-digit code passes in dev; this one is the documented happy path. */
+export const MOCK_OTP = '123456';
 
 /**
- * TODO: remove mockLogin once Backend chính's real /auth/login is ready.
+ * TODO: remove the mock branches once Backend chính ships the real
+ * /auth/otp/request + /auth/otp/verify pair.
  */
-function mockLogin(email: string, password: string): Promise<Session> {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (email === MOCK_EMAIL && password === MOCK_PASSWORD) {
-        resolve({
-          token: 'mock-dev-token',
-          user: { id: 'usr_mock_001', name: 'Test User', email },
-        });
-      } else {
-        reject(new Error('Invalid credentials'));
-      }
-    }, 500);
-  });
+function delay(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-/**
- * Placeholder endpoint — swap for whatever Backend chính defines for login.
- */
-export async function login(email: string, password: string): Promise<Session> {
+/** Asks the backend to email a 6-digit sign-in code. */
+export async function requestOtp(email: string): Promise<void> {
   if (__DEV__) {
-    return mockLogin(email, password);
+    await delay(500);
+    return;
   }
-  const response = await api.post<{ data: Session }>('/auth/login', { email, password });
+  await api.post('/auth/otp/request', { email });
+}
+
+/** Exchanges the emailed code for a session. */
+export async function verifyOtp(email: string, code: string): Promise<Session> {
+  if (__DEV__) {
+    await delay(500);
+    if (!/^\d{6}$/.test(code)) {
+      throw new Error('Invalid code');
+    }
+    return {
+      token: 'mock-dev-token',
+      user: { id: 'usr_mock_001', name: 'Test User', email },
+    };
+  }
+  const response = await api.post<{ data: Session }>('/auth/otp/verify', { email, code });
   return response.data.data;
 }
 

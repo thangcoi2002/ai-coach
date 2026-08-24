@@ -3,8 +3,9 @@ import { setAuthToken } from '../services/api';
 import {
   clearSession,
   loadSession,
-  login as loginRequest,
+  requestOtp as requestOtpRequest,
   saveSession,
+  verifyOtp as verifyOtpRequest,
   type AuthUser,
 } from '../services/auth.service';
 
@@ -12,7 +13,8 @@ type AuthContextValue = {
   user: AuthUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  requestOtp: (email: string) => Promise<void>;
+  verifyOtp: (email: string, code: string) => Promise<void>;
   logout: () => Promise<void>;
 };
 
@@ -33,8 +35,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       .finally(() => setIsLoading(false));
   }, []);
 
-  const login = async (email: string, password: string) => {
-    const session = await loginRequest(email, password);
+  const requestOtp = async (email: string) => {
+    await requestOtpRequest(email);
+  };
+
+  const verifyOtp = async (email: string, code: string) => {
+    const session = await verifyOtpRequest(email, code);
     await saveSession(session);
     setAuthToken(session.token);
     setUser(session.user);
@@ -47,7 +53,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const value = useMemo(
-    () => ({ user, isAuthenticated: user != null, isLoading, login, logout }),
+    () => ({ user, isAuthenticated: user != null, isLoading, requestOtp, verifyOtp, logout }),
     [user, isLoading],
   );
 
