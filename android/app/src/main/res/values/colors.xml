@@ -1,3 +1,5 @@
 <resources>
     <color name="bootsplash_background">#2563eb</color>
+    <!-- Adaptive launcher icon background; matches the auth accent. -->
+    <color name="ic_launcher_background">#C64A2A</color>
 </resources>
