@@ -6,6 +6,7 @@ import OtpStep from '../components/auth/OtpStep';
 import { OTP_LENGTH } from '../components/auth/OtpFields';
 import SignInStep from '../components/auth/SignInStep';
 import { useAuth } from '../context/AuthProvider';
+import { GoogleNotConfiguredError } from '../services/google';
 import { isValidEmail } from '../utils/email';
 
 type Step = 'signin' | 'otp';
@@ -13,11 +14,12 @@ type Step = 'signin' | 'otp';
 const emptyOtp = () => Array<string>(OTP_LENGTH).fill('');
 
 export default function LoginScreen() {
-  const { requestOtp, verifyOtp } = useAuth();
+  const { requestOtp, signInWithGoogle, verifyOtp } = useAuth();
   const [step, setStep] = useState<Step>('signin');
   const [email, setEmail] = useState('');
   const [digits, setDigits] = useState<string[]>(emptyOtp);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isGoogleSubmitting, setIsGoogleSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleContinue = async () => {
@@ -35,6 +37,23 @@ export default function LoginScreen() {
       setError('Không gửi được mã xác nhận. Vui lòng thử lại.');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleGoogle = async () => {
+    setError(null);
+    setIsGoogleSubmitting(true);
+    try {
+      // A dismissed Google sheet is not a failure, so it needs no message.
+      await signInWithGoogle();
+    } catch (cause) {
+      setError(
+        cause instanceof GoogleNotConfiguredError
+          ? 'Chưa cấu hình đăng nhập Google: thiếu client ID trong .env.'
+          : 'Không đăng nhập được bằng Google. Vui lòng thử lại.',
+      );
+    } finally {
+      setIsGoogleSubmitting(false);
     }
   };
 
@@ -94,13 +113,12 @@ export default function LoginScreen() {
                   setEmail(value);
                 }}
                 onContinue={handleContinue}
-                onGoogle={() => {
-                  // TODO: wire Google sign-in once the backend exposes it.
-                }}
+                onGoogle={handleGoogle}
                 onDemo={() => {
                   // TODO: wire the demo tour once its content is ready.
                 }}
                 isSubmitting={isSubmitting}
+                isGoogleSubmitting={isGoogleSubmitting}
                 error={error}
               />
             ) : (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Pressable, Text, TextInput, View } from 'react-native';
 import PrimaryButton from './PrimaryButton';
 import Wordmark from './Wordmark';
 import { brand } from '../../theme/colors';
@@ -11,6 +11,7 @@ type Props = {
   onGoogle: () => void;
   onDemo: () => void;
   isSubmitting: boolean;
+  isGoogleSubmitting: boolean;
   error: string | null;
 };
 
@@ -21,8 +22,11 @@ export default function SignInStep({
   onGoogle,
   onDemo,
   isSubmitting,
+  isGoogleSubmitting,
   error,
 }: Props) {
+  const isBusy = isSubmitting || isGoogleSubmitting;
+
   return (
     <>
       <View className="flex-1">
@@ -51,13 +55,26 @@ export default function SignInStep({
 
         {error && <Text className="text-[13px] text-brand-accent">{error}</Text>}
 
-        <PrimaryButton label="Tiếp tục" onPress={onContinue} loading={isSubmitting} />
+        <PrimaryButton
+          label="Tiếp tục"
+          onPress={onContinue}
+          loading={isSubmitting}
+          disabled={isGoogleSubmitting}
+        />
 
         <Pressable
           accessibilityRole="button"
+          accessibilityState={{ disabled: isBusy }}
           onPress={onGoogle}
-          className="h-[54px] w-full flex-row items-center justify-center rounded-2xl border border-brand-border active:bg-brand-input-border">
-          <Text className="text-[15px] font-semibold text-brand-body">Tiếp tục với Google</Text>
+          disabled={isBusy}
+          className={`h-[54px] w-full flex-row items-center justify-center rounded-2xl border border-brand-border ${
+            isBusy ? 'opacity-60' : 'active:bg-brand-input-border'
+          }`}>
+          {isGoogleSubmitting ? (
+            <ActivityIndicator color={brand.body} />
+          ) : (
+            <Text className="text-[15px] font-semibold text-brand-body">Tiếp tục với Google</Text>
+          )}
         </Pressable>
 
         <Text className="mt-2.5 text-center text-[12.5px] leading-[18.75px] text-brand-muted">

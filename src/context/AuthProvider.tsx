@@ -1,13 +1,23 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { setAuthToken } from '../services/api';
 import {
   clearSession,
   loadSession,
+  loginWithGoogle,
   requestOtp as requestOtpRequest,
   saveSession,
   verifyOtp as verifyOtpRequest,
   type AuthUser,
+  type Session,
 } from '../services/auth.service';
+import { requestGoogleCredential, signOutOfGoogle } from '../services/google';
 
 type AuthContextValue = {
   user: AuthUser | null;
@@ -15,6 +25,8 @@ type AuthContextValue = {
   isLoading: boolean;
   requestOtp: (email: string) => Promise<void>;
   verifyOtp: (email: string, code: string) => Promise<void>;
+  /** Resolves to 'cancelled' when the user dismisses the Google sheet. */
+  signInWithGoogle: () => Promise<'signed-in' | 'cancelled'>;
   logout: () => Promise<void>;
 };
 
@@ -35,26 +47,50 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       .finally(() => setIsLoading(false));
   }, []);
 
-  const requestOtp = async (email: string) => {
-    await requestOtpRequest(email);
-  };
-
-  const verifyOtp = async (email: string, code: string) => {
-    const session = await verifyOtpRequest(email, code);
+  const startSession = useCallback(async (session: Session) => {
     await saveSession(session);
     setAuthToken(session.token);
     setUser(session.user);
-  };
+  }, []);
 
-  const logout = async () => {
+  const requestOtp = useCallback(async (email: string) => {
+    await requestOtpRequest(email);
+  }, []);
+
+  const verifyOtp = useCallback(
+    async (email: string, code: string) => {
+      await startSession(await verifyOtpRequest(email, code));
+    },
+    [startSession],
+  );
+
+  const signInWithGoogle = useCallback(async () => {
+    const credential = await requestGoogleCredential();
+    if (!credential) {
+      return 'cancelled' as const;
+    }
+    await startSession(await loginWithGoogle(credential));
+    return 'signed-in' as const;
+  }, [startSession]);
+
+  const logout = useCallback(async () => {
+    await signOutOfGoogle();
     await clearSession();
     setAuthToken(null);
     setUser(null);
-  };
+  }, []);
 
   const value = useMemo(
-    () => ({ user, isAuthenticated: user != null, isLoading, requestOtp, verifyOtp, logout }),
-    [user, isLoading],
+    () => ({
+      user,
+      isAuthenticated: user != null,
+      isLoading,
+      requestOtp,
+      verifyOtp,
+      signInWithGoogle,
+      logout,
+    }),
+    [user, isLoading, requestOtp, verifyOtp, signInWithGoogle, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -22,6 +22,17 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<!-- Google sign-in callback: the "iOS URL scheme" of the
+				     ai-coach-ios OAuth client (its client ID reversed). -->
+				<string>com.googleusercontent.apps.876727739470-i2t1n3jfh1nqoiqi6651hh8pihq397f3</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
