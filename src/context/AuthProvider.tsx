@@ -10,14 +10,12 @@ import { setAuthToken } from '../services/api';
 import {
   clearSession,
   loadSession,
-  loginWithGoogle,
   requestOtp as requestOtpRequest,
   saveSession,
   verifyOtp as verifyOtpRequest,
   type AuthUser,
   type Session,
 } from '../services/auth.service';
-import { requestGoogleCredential, signOutOfGoogle } from '../services/google';
 
 type AuthContextValue = {
   user: AuthUser | null;
@@ -25,8 +23,6 @@ type AuthContextValue = {
   isLoading: boolean;
   requestOtp: (email: string) => Promise<void>;
   verifyOtp: (email: string, code: string) => Promise<void>;
-  /** Resolves to 'cancelled' when the user dismisses the Google sheet. */
-  signInWithGoogle: () => Promise<'signed-in' | 'cancelled'>;
   logout: () => Promise<void>;
 };
 
@@ -64,17 +60,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [startSession],
   );
 
-  const signInWithGoogle = useCallback(async () => {
-    const credential = await requestGoogleCredential();
-    if (!credential) {
-      return 'cancelled' as const;
-    }
-    await startSession(await loginWithGoogle(credential));
-    return 'signed-in' as const;
-  }, [startSession]);
-
   const logout = useCallback(async () => {
-    await signOutOfGoogle();
     await clearSession();
     setAuthToken(null);
     setUser(null);
@@ -87,10 +73,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       isLoading,
       requestOtp,
       verifyOtp,
-      signInWithGoogle,
       logout,
     }),
-    [user, isLoading, requestOtp, verifyOtp, signInWithGoogle, logout],
+    [user, isLoading, requestOtp, verifyOtp, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

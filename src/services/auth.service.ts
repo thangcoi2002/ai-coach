@@ -1,6 +1,5 @@
 import * as Keychain from 'react-native-keychain';
 import { api } from './api';
-import type { GoogleCredential } from './google';
 
 const KEYCHAIN_SERVICE = 'ai-coach-session';
 
@@ -20,7 +19,7 @@ export const MOCK_OTP = '123456';
 
 /**
  * TODO: remove the mock branches once Backend chính ships the real
- * /auth/otp/request, /auth/otp/verify and /auth/google endpoints.
+ * /auth/otp/request + /auth/otp/verify pair.
  */
 function delay(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -48,26 +47,6 @@ export async function verifyOtp(email: string, code: string): Promise<Session> {
     };
   }
   const response = await api.post<{ data: Session }>('/auth/otp/verify', { email, code });
-  return response.data.data;
-}
-
-/** Trades a Google credential for one of our sessions. */
-export async function loginWithGoogle(credential: GoogleCredential): Promise<Session> {
-  if (__DEV__) {
-    await delay(500);
-    return {
-      token: 'mock-dev-token',
-      user: {
-        id: 'usr_mock_google',
-        name: credential.name ?? 'Google User',
-        email: credential.email,
-      },
-    };
-  }
-  const response = await api.post<{ data: Session }>('/auth/google', {
-    idToken: credential.idToken,
-    serverAuthCode: credential.serverAuthCode,
-  });
   return response.data.data;
 }
 

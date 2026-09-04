@@ -1,14 +1,4 @@
 PODS:
-  - AppAuth (2.0.0):
-    - AppAuth/Core (= 2.0.0)
-    - AppAuth/ExternalUserAgent (= 2.0.0)
-  - AppAuth/Core (2.0.0)
-  - AppAuth/ExternalUserAgent (2.0.0):
-    - AppAuth/Core
-  - AppCheckCore (11.2.0):
-    - GoogleUtilities/Environment (~> 8.0)
-    - GoogleUtilities/UserDefaults (~> 8.0)
-    - PromisesObjC (~> 2.4)
   - boost (1.84.0):
     - ReactNativeDependencies
   - DoubleConversion (1.1.6):
@@ -21,28 +11,9 @@ PODS:
     - ReactNativeDependencies
   - glog (0.3.5):
     - ReactNativeDependencies
-  - GoogleSignIn (9.0.0):
-    - AppAuth (~> 2.0)
-    - AppCheckCore (~> 11.0)
-    - GTMAppAuth (~> 5.0)
-    - GTMSessionFetcher/Core (~> 3.3)
-  - GoogleUtilities/Environment (8.1.0):
-    - GoogleUtilities/Privacy
-  - GoogleUtilities/Logger (8.1.0):
-    - GoogleUtilities/Environment
-    - GoogleUtilities/Privacy
-  - GoogleUtilities/Privacy (8.1.0)
-  - GoogleUtilities/UserDefaults (8.1.0):
-    - GoogleUtilities/Logger
-    - GoogleUtilities/Privacy
-  - GTMAppAuth (5.0.0):
-    - AppAuth/Core (~> 2.0)
-    - GTMSessionFetcher/Core (< 4.0, >= 3.3)
-  - GTMSessionFetcher/Core (3.5.0)
   - hermes-engine (250829098.0.16):
     - hermes-engine/Pre-built (= 250829098.0.16)
   - hermes-engine/Pre-built (250829098.0.16)
-  - PromisesObjC (2.4.0)
   - RCT-Folly (2024.11.18.00):
     - RCT-Folly/Default (= 2024.11.18.00)
     - ReactNativeDependencies
@@ -1769,29 +1740,6 @@ PODS:
     - ReactNativeDependencies
     - RNWorklets (>= 0.8.0)
     - Yoga
-  - RNGoogleSignin (16.1.4):
-    - GoogleSignIn (~> 9.0)
-    - hermes-engine
-    - RCTRequired
-    - RCTTypeSafety
-    - React-bridging
-    - React-Core
-    - React-Core-prebuilt
-    - React-debug
-    - React-Fabric
-    - React-featureflags
-    - React-graphics
-    - React-ImageManager
-    - React-jsi
-    - React-NativeModulesApple
-    - React-RCTFabric
-    - React-renderercss
-    - React-rendererdebug
-    - React-utils
-    - ReactCodegen
-    - ReactCommon/turbomodule/core
-    - ReactNativeDependencies
-    - Yoga
   - RNKeychain (10.0.0):
     - hermes-engine
     - RCTRequired
@@ -2192,7 +2140,6 @@ DEPENDENCIES:
   - RNBootSplash (from `../node_modules/react-native-bootsplash`)
   - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
-  - "RNGoogleSignin (from `../node_modules/@react-native-google-signin/google-signin`)"
   - RNKeychain (from `../node_modules/react-native-keychain`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -2201,16 +2148,6 @@ DEPENDENCIES:
   - RNWorklets (from `../node_modules/react-native-worklets`)
   - SocketRocket (from `build/rndeps-facades/SocketRocket`)
   - Yoga (from `build/rncore-facades/Yoga`)
-
-SPEC REPOS:
-  trunk:
-    - AppAuth
-    - AppCheckCore
-    - GoogleSignIn
-    - GoogleUtilities
-    - GTMAppAuth
-    - GTMSessionFetcher
-    - PromisesObjC
 
 EXTERNAL SOURCES:
   boost:
@@ -2388,8 +2325,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-clipboard/clipboard"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
-  RNGoogleSignin:
-    :path: "../node_modules/@react-native-google-signin/google-signin"
   RNKeychain:
     :path: "../node_modules/react-native-keychain"
   RNReanimated:
@@ -2408,20 +2343,13 @@ EXTERNAL SOURCES:
     :path: build/rncore-facades/Yoga
 
 SPEC CHECKSUMS:
-  AppAuth: 1c1a8afa7e12f2ec3a294d9882dfa5ab7d3cb063
-  AppCheckCore: cc8fd0a3a230ddd401f326489c99990b013f0c4f
   boost: 2a9d6e1d9873337543f08d9dbc007b288f4e113b
   DoubleConversion: e85e4faac763226bfd1cc4c6a98d8355149b27a5
   fast_float: 908e5ee35999f3d91af4b962ac951acac591866c
   FBLazyVector: ef7f5a8a8d3c7b3fb0b7c6f2bb810938c5fda9ea
   fmt: c7776a2a4b1d7ce88b809a1e4d1f7add0f2369df
   glog: b4427c3119645da795ff09985ba9da909c940c96
-  GoogleSignIn: c7f09cfbc85a1abf69187be091997c317cc33b77
-  GoogleUtilities: 00c88b9a86066ef77f0da2fab05f65d7768ed8e1
-  GTMAppAuth: 217a876b249c3c585a54fd6f73e6b58c4f5c4238
-  GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
   hermes-engine: 6a26e94b4a974cbadc751eed9caa12624c38f226
-  PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   RCT-Folly: d173e541eeb78cad5c81011c1bbf62d5b86b9778
   RCTDeprecation: e12a993f8b27b25e9ed3617181ca87c20e6ab7ac
   RCTRequired: 3ba259676adfd0c6371e474db758470fdf97f06d
@@ -2502,7 +2430,6 @@ SPEC CHECKSUMS:
   RNBootSplash: 530e3c88481bfda270ab9a37de5eaa1c720b6604
   RNCClipboard: 6b55f93ca3c5acf3222b10e4a14504d315c9d281
   RNGestureHandler: da48be88e9cc63a20f25d6b715e6acc93992c2dd
-  RNGoogleSignin: ae3fe0397f4e1ec87d713d2229fac81afe052719
   RNKeychain: c21223f99385f30e3353355f1a130c150f23c96d
   RNReanimated: 66ea54c88797982b302e18c848becea024329ba0
   RNScreens: cdfdbb0050779d8a879038774be539b584204730
