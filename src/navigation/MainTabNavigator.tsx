@@ -6,6 +6,7 @@ import AnalysisScreen from '@/screens/AnalysisScreen';
 import NotificationsScreen from '@/screens/NotificationsScreen';
 import CustomTabBar from './CustomTabBar';
 import { brand } from '@/theme/colors';
+import { MAIN_TAB_ROUTES } from './routes';
 import type { MainTabParamList } from './types';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -18,10 +19,10 @@ export default function MainTabNavigator() {
         sceneStyle: { backgroundColor: brand.page },
       }}
       tabBar={renderTabBar}>
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Practice" component={PracticeScreen} />
-      <Tab.Screen name="Analysis" component={AnalysisScreen} />
-      <Tab.Screen name="Notifications" component={NotificationsScreen} />
+      <Tab.Screen name={MAIN_TAB_ROUTES.HOME} component={HomeScreen} />
+      <Tab.Screen name={MAIN_TAB_ROUTES.PRACTICE} component={PracticeScreen} />
+      <Tab.Screen name={MAIN_TAB_ROUTES.ANALYSIS} component={AnalysisScreen} />
+      <Tab.Screen name={MAIN_TAB_ROUTES.NOTIFICATIONS} component={NotificationsScreen} />
     </Tab.Navigator>
   );
 }

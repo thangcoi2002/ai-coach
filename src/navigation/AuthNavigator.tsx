@@ -1,6 +1,7 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from '@/screens/LoginScreen';
+import { ROOT_ROUTES } from './routes';
 import type { RootStackParamList } from './types';
 import { useSetting } from '@/context/SettingProvider';
 import OnboardingScreen from '@/screens/OnboardingScreen';
@@ -13,9 +14,9 @@ export default function AuthNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {showOnboarding && (
-        <Stack.Screen name="Onboarding" component={OnboardingScreen} />
+        <Stack.Screen name={ROOT_ROUTES.ONBOARDING} component={OnboardingScreen} />
       )}
-      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name={ROOT_ROUTES.LOGIN} component={LoginScreen} />
     </Stack.Navigator>
   );
 }

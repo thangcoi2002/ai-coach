@@ -2,6 +2,7 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MainTabNavigator from './MainTabNavigator';
 import ProfileScreen from '@/screens/ProfileScreen';
+import { ROOT_ROUTES } from './routes';
 import type { RootStackParamList } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -15,8 +16,8 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 export default function AppNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="MainTabs" component={MainTabNavigator} />
-      <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name={ROOT_ROUTES.MAIN_TABS} component={MainTabNavigator} />
+      <Stack.Screen name={ROOT_ROUTES.PROFILE} component={ProfileScreen} />
     </Stack.Navigator>
   );
 }
