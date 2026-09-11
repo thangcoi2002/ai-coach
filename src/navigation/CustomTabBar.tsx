@@ -8,6 +8,8 @@ import {
 import { Bell, ChartNoAxesCombined, Dumbbell, Home } from 'lucide-react-native';
 import type { LucideIcon } from 'lucide-react-native';
 import { brand } from '@/theme/colors';
+import { useNotifications } from '@/context/NotificationProvider';
+import { MAIN_TAB_ROUTES } from './routes';
 import type { MainTabParamList } from './types';
 
 const ICONS: Record<keyof MainTabParamList, LucideIcon> = {
@@ -38,6 +40,7 @@ export default function CustomTabBar({
 }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
   const reportHeight = useContext(BottomTabBarHeightCallbackContext);
+  const { unreadCount } = useNotifications();
 
   const handleLayout = (event: LayoutChangeEvent) => {
     reportHeight?.(event.nativeEvent.layout.height);
@@ -85,6 +88,9 @@ export default function CustomTabBar({
                   size={22}
                   strokeWidth={isFocused ? 2.25 : 2}
                 />
+                {routeName === MAIN_TAB_ROUTES.NOTIFICATIONS && unreadCount > 0 && (
+                  <View className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-brand-accent" />
+                )}
               </View>
               <Text
                 className={`text-[11px] ${

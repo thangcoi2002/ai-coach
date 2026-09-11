@@ -2,32 +2,54 @@ import React from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { Bell } from 'lucide-react-native';
-import { brand } from '@/theme/colors';
+import { useNotifications, type Notification } from '@/context/NotificationProvider';
+
+function NotificationCard({ notification }: { notification: Notification }) {
+  return (
+    <View
+      className={`rounded-[20px] border border-brand-ink/10 p-4 ${
+        notification.unread ? 'bg-brand-surface' : 'bg-brand-card'
+      }`}>
+      <View className="flex-row items-start justify-between gap-2.5">
+        <Text className="min-w-0 flex-1 text-[15px] font-bold leading-[22.5px] text-brand-ink">
+          {notification.title}
+        </Text>
+        {notification.unread && (
+          <View className="mt-[5px] h-[7px] w-[7px] rounded-full bg-brand-accent" />
+        )}
+      </View>
+      <Text className="mt-[5px] text-[13px] font-medium leading-[19.5px] text-brand-ink/60">
+        {notification.body}
+      </Text>
+      <View className="mt-[11px] flex-row items-center gap-2">
+        <View className="rounded-full bg-brand-card px-2.5 py-[5px]">
+          <Text className="text-[11px] font-bold text-brand-ink">{notification.cta}</Text>
+        </View>
+        <Text className="text-[11px] font-medium text-brand-ink/50">{notification.when}</Text>
+      </View>
+    </View>
+  );
+}
 
 export default function NotificationsScreen() {
   const tabBarHeight = useBottomTabBarHeight();
+  const { notifications } = useNotifications();
 
   return (
     <View className="flex-1 bg-brand-page">
       <SafeAreaView className="flex-1" edges={['top']}>
-        <View className="h-9 justify-center px-5">
-          <Text className="text-[17px] font-bold text-brand-ink">
-            Thông báo
-          </Text>
+        <View className="h-[34px] items-center justify-center">
+          <Text className="text-[15px] font-bold text-brand-ink">Thông báo</Text>
         </View>
 
         <ScrollView
           className="flex-1"
-          contentContainerClassName="grow items-center justify-center gap-4 px-8"
+          contentContainerClassName="gap-[9px] px-5 pt-3"
           contentContainerStyle={{ paddingBottom: tabBarHeight + 24 }}
           showsVerticalScrollIndicator={false}>
-          <View className="h-14 w-14 items-center justify-center rounded-[20px] bg-brand-card">
-            <Bell color={brand.meta} size={28} />
-          </View>
-          <Text className="text-center text-[15px] leading-6 text-brand-body">
-            Chưa có thông báo nào.
-          </Text>
+          {notifications.map(notification => (
+            <NotificationCard key={notification.id} notification={notification} />
+          ))}
         </ScrollView>
       </SafeAreaView>
     </View>

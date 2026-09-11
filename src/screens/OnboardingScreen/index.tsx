@@ -17,7 +17,7 @@ import {
 } from 'lucide-react-native';
 import PrimaryButton from '@/components/PrimaryButton';
 import Wordmark from '@/components/Wordmark';
-import { useEditSetting } from '@/context/SettingProvider';
+import { useSetting } from '@/context/SettingProvider';
 
 type Page = {
   key: 'scenario' | 'document' | 'goal';
@@ -73,7 +73,7 @@ function FeatureCards() {
 }
 
 export default function OnboardingScreen() {
-  const editSetting = useEditSetting();
+  const { editSetting } = useSetting();
   const [index, setIndex] = useState(0);
   const [pageWidth, setPageWidth] = useState(Dimensions.get('window').width);
   const scrollRef = useRef<React.ComponentRef<typeof ScrollView>>(null);
