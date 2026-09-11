@@ -1,35 +1,31 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-vector-icons/Ionicons';
 import HomeScreen from '@/screens/HomeScreen';
-import ProfileScreen from '@/screens/ProfileScreen';
+import PracticeScreen from '@/screens/PracticeScreen';
+import AnalysisScreen from '@/screens/AnalysisScreen';
+import NotificationsScreen from '@/screens/NotificationsScreen';
+import CustomTabBar from './CustomTabBar';
+import { brand } from '@/theme/colors';
 import type { MainTabParamList } from './types';
-
-type TabIconProps = { color: string; size: number };
-
-function HomeTabIcon({ color, size }: TabIconProps) {
-  return <Icon name="home" color={color} size={size} />;
-}
-
-function ProfileTabIcon({ color, size }: TabIconProps) {
-  return <Icon name="person" color={color} size={size} />;
-}
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
 export default function MainTabNavigator() {
   return (
-    <Tab.Navigator screenOptions={{ headerShown: false }}>
-      <Tab.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{ tabBarIcon: HomeTabIcon }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{ tabBarIcon: ProfileTabIcon }}
-      />
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+        sceneStyle: { backgroundColor: brand.page },
+      }}
+      tabBar={renderTabBar}>
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Practice" component={PracticeScreen} />
+      <Tab.Screen name="Analysis" component={AnalysisScreen} />
+      <Tab.Screen name="Notifications" component={NotificationsScreen} />
     </Tab.Navigator>
   );
+}
+
+function renderTabBar(props: React.ComponentProps<typeof CustomTabBar>) {
+  return <CustomTabBar {...props} />;
 }

@@ -1,21 +1,20 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MainTabNavigator from './MainTabNavigator';
-import NotificationsScreen from '@/screens/NotificationsScreen';
+import ProfileScreen from '@/screens/ProfileScreen';
 import type { RootStackParamList } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-/** Screens shown once the user is signed in: onboarding first, then the main app. */
+/** Screens shown once the user is signed in: the tabbed app, plus screens reached by pushing. */
 export default function AppNavigator() {
-
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="MainTabs" component={MainTabNavigator} />
       <Stack.Screen
-        name="Notifications"
-        component={NotificationsScreen}
-        options={{ headerShown: true, title: 'Notifications' }}
+        name="Profile"
+        component={ProfileScreen}
+        options={{ headerShown: true, title: 'Hồ sơ' }}
       />
     </Stack.Navigator>
   );

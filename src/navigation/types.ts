@@ -2,14 +2,16 @@ import type { NavigatorScreenParams } from '@react-navigation/native';
 
 export type MainTabParamList = {
   Home: undefined;
-  Profile: undefined;
+  Practice: undefined;
+  Analysis: undefined;
+  Notifications: undefined;
 };
 
 export type RootStackParamList = {
   Login: undefined;
   Onboarding: undefined;
   MainTabs: NavigatorScreenParams<MainTabParamList>;
-  Notifications: undefined;
+  Profile: undefined;
 };
 
 declare global {
