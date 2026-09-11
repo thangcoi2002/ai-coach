@@ -33,6 +33,14 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Akelo cần quyền truy cập camera để bạn quay video diễn tập và gửi video hội thoại.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Akelo cần quyền truy cập micro để ghi âm cuộc trò chuyện và diễn tập bằng giọng nói.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Akelo cần quyền truy cập thư viện ảnh để bạn chọn video hoặc bản ghi âm có sẵn.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Akelo cần quyền lưu video vào thư viện ảnh của bạn.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>RCTNewArchEnabled</key>
