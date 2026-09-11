@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import OtpFields from './OtpFields';
+import BackButton from '@/components/BackButton';
 import PrimaryButton from '@/components/PrimaryButton';
 import { maskEmail } from '@/utils/email';
 
@@ -46,9 +47,7 @@ export default function OtpStep({
   return (
     <View className="flex-1 bg-brand-page px-5 pb-24 pt-[58px]">
       <View className="h-[38px] justify-center">
-        <Pressable accessibilityRole="button" accessibilityLabel="Quay lại" onPress={onBack} hitSlop={8}>
-          <Text className="text-xl font-bold text-brand-ink/60">‹</Text>
-        </Pressable>
+        <BackButton onPress={onBack} />
       </View>
 
       <Text className="mt-3.5 text-xl font-bold tracking-[-0.02em] text-brand-ink">Nhập mã</Text>
