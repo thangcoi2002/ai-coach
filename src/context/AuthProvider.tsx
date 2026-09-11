@@ -1,18 +1,28 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { setAuthToken } from '../services/api';
 import {
   clearSession,
   loadSession,
-  login as loginRequest,
+  requestOtp as requestOtpRequest,
   saveSession,
+  verifyOtp as verifyOtpRequest,
   type AuthUser,
+  type Session,
 } from '../services/auth.service';
 
 type AuthContextValue = {
   user: AuthUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  requestOtp: (email: string) => Promise<void>;
+  verifyOtp: (email: string, code: string) => Promise<void>;
   logout: () => Promise<void>;
 };
 
@@ -33,22 +43,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       .finally(() => setIsLoading(false));
   }, []);
 
-  const login = async (email: string, password: string) => {
-    const session = await loginRequest(email, password);
+  const startSession = useCallback(async (session: Session) => {
     await saveSession(session);
     setAuthToken(session.token);
     setUser(session.user);
-  };
+  }, []);
 
-  const logout = async () => {
+  const requestOtp = useCallback(async (email: string) => {
+    await requestOtpRequest(email);
+  }, []);
+
+  const verifyOtp = useCallback(
+    async (email: string, code: string) => {
+      await startSession(await verifyOtpRequest(email, code));
+    },
+    [startSession],
+  );
+
+  const logout = useCallback(async () => {
     await clearSession();
     setAuthToken(null);
     setUser(null);
-  };
+  }, []);
 
   const value = useMemo(
-    () => ({ user, isAuthenticated: user != null, isLoading, login, logout }),
-    [user, isLoading],
+    () => ({
+      user,
+      isAuthenticated: user != null,
+      isLoading,
+      requestOtp,
+      verifyOtp,
+      logout,
+    }),
+    [user, isLoading, requestOtp, verifyOtp, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

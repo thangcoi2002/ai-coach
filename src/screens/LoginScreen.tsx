@@ -1,102 +1,117 @@
 import React, { useState } from 'react';
-import { ActivityIndicator, Text, TextInput, View } from 'react-native';
-import { Controller, useForm } from 'react-hook-form';
-import { Pressable } from 'react-native';
-import Clipboard from '@react-native-clipboard/clipboard';
+import { KeyboardAvoidingView, Platform, ScrollView, StatusBar, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import AuthBackdrop from '../components/auth/AuthBackdrop';
+import OtpStep from '../components/auth/OtpStep';
+import { OTP_LENGTH } from '../components/auth/OtpFields';
+import SignInStep from '../components/auth/SignInStep';
 import { useAuth } from '../context/AuthProvider';
-import { MOCK_EMAIL, MOCK_PASSWORD } from '../services/auth.service';
+import { isValidEmail } from '../utils/email';
 
-type FormValues = {
-  email: string;
-  password: string;
-};
+type Step = 'signin' | 'otp';
+
+const emptyOtp = () => Array<string>(OTP_LENGTH).fill('');
 
 export default function LoginScreen() {
-  const { login } = useAuth();
+  const { requestOtp, verifyOtp } = useAuth();
+  const [step, setStep] = useState<Step>('signin');
+  const [email, setEmail] = useState('');
+  const [digits, setDigits] = useState<string[]>(emptyOtp);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const {
-    control,
-    handleSubmit,
-    formState: { isSubmitting, errors },
-  } = useForm<FormValues>({ defaultValues: { email: '', password: '' } });
 
-  const onSubmit = async (values: FormValues) => {
+  const handleContinue = async () => {
+    if (!isValidEmail(email)) {
+      setError('Vui lòng nhập email công ty hợp lệ.');
+      return;
+    }
     setError(null);
+    setIsSubmitting(true);
     try {
-      await login(values.email, values.password);
+      await requestOtp(email.trim());
+      setDigits(emptyOtp());
+      setStep('otp');
     } catch {
-      setError('Đăng nhập thất bại. Vui lòng kiểm tra lại email/mật khẩu.');
+      setError('Không gửi được mã xác nhận. Vui lòng thử lại.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
+  const handleBack = () => {
+    setError(null);
+    setStep('signin');
+  };
+
+  const handleResend = async () => {
+    setError(null);
+    setDigits(emptyOtp());
+    try {
+      await requestOtp(email.trim());
+    } catch {
+      setError('Không gửi lại được mã. Vui lòng thử lại.');
+    }
+  };
+
+  const handleConfirm = async () => {
+    setError(null);
+    setIsSubmitting(true);
+    try {
+      // On success AuthProvider flips isAuthenticated and RootNavigator swaps
+      // this screen out, so there is nothing left to navigate to here.
+      await verifyOtp(email.trim(), digits.join(''));
+    } catch {
+      setError('Mã xác nhận không đúng hoặc đã hết hạn.');
+      setDigits(emptyOtp());
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDigitsChange = (next: string[]) => {
+    setError(null);
+    setDigits(next);
+  };
+
   return (
-    <View className="flex-1 justify-center gap-4 px-6">
-      <Text className="mb-4 text-2xl font-bold">Đăng nhập</Text>
-
-      {__DEV__ && (
-        <View className="mb-2 gap-1 rounded-lg bg-gray-100 p-3">
-          <Pressable onPress={() => Clipboard.setString(MOCK_EMAIL)}>
-            <Text className="text-xs text-gray-500">
-              Test account: <Text className="font-semibold text-gray-700">{MOCK_EMAIL}</Text> (bấm để copy)
-            </Text>
-          </Pressable>
-          <Pressable onPress={() => Clipboard.setString(MOCK_PASSWORD)}>
-            <Text className="text-xs text-gray-500">
-              Password: <Text className="font-semibold text-gray-700">{MOCK_PASSWORD}</Text> (bấm để copy)
-            </Text>
-          </Pressable>
-        </View>
-      )}
-
-      <Controller
-        control={control}
-        name="email"
-        rules={{ required: 'Vui lòng nhập email' }}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
-            className="rounded-lg border border-gray-300 px-4 py-3"
-            placeholder="Email"
-            autoCapitalize="none"
-            keyboardType="email-address"
-            onBlur={onBlur}
-            onChangeText={onChange}
-            value={value}
-          />
-        )}
-      />
-      {errors.email && <Text className="text-sm text-red-500">{errors.email.message}</Text>}
-
-      <Controller
-        control={control}
-        name="password"
-        rules={{ required: 'Vui lòng nhập mật khẩu' }}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
-            className="rounded-lg border border-gray-300 px-4 py-3"
-            placeholder="Mật khẩu"
-            secureTextEntry
-            onBlur={onBlur}
-            onChangeText={onChange}
-            value={value}
-          />
-        )}
-      />
-      {errors.password && (
-        <Text className="text-sm text-red-500">{errors.password.message}</Text>
-      )}
-
-      {error && <Text className="text-sm text-red-500">{error}</Text>}
-
-      <Pressable
-        className="mt-2 items-center rounded-lg bg-blue-600 px-4 py-3"
-        onPress={() => handleSubmit(onSubmit)()}
-        disabled={isSubmitting}>
-        {isSubmitting ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          <Text className="font-semibold text-white">Đăng nhập</Text>
-        )}
-      </Pressable>
+    <View className="flex-1">
+      <StatusBar barStyle="dark-content" />
+      <AuthBackdrop />
+      <SafeAreaView className="flex-1" edges={['top', 'bottom']}>
+        <KeyboardAvoidingView
+          className="flex-1"
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          <ScrollView
+            className="flex-1"
+            contentContainerClassName="grow px-5 pb-5 pt-9"
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}>
+            {step === 'signin' ? (
+              <SignInStep
+                email={email}
+                onEmailChange={value => {
+                  setError(null);
+                  setEmail(value);
+                }}
+                onContinue={handleContinue}
+                isSubmitting={isSubmitting}
+                error={error}
+              />
+            ) : (
+              <OtpStep
+                email={email}
+                digits={digits}
+                onDigitsChange={handleDigitsChange}
+                onBack={handleBack}
+                onResend={handleResend}
+                onConfirm={handleConfirm}
+                isSubmitting={isSubmitting}
+                error={error}
+              />
+            )}
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
     </View>
   );
 }
