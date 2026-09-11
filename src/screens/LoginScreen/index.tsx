@@ -52,13 +52,13 @@ export default function LoginScreen() {
     }
   };
 
-  const handleConfirm = async () => {
+  const handleConfirm = async (code: string) => {
     setError(null);
     setIsSubmitting(true);
     try {
       // On success AuthProvider flips isAuthenticated and RootNavigator swaps
       // this screen out, so there is nothing left to navigate to here.
-      await verifyOtp(email.trim(), digits.join(''));
+      await verifyOtp(email.trim(), code);
     } catch {
       setError('Mã xác nhận không đúng hoặc đã hết hạn.');
       setDigits(emptyOtp());
@@ -70,6 +70,9 @@ export default function LoginScreen() {
   const handleDigitsChange = (next: string[]) => {
     setError(null);
     setDigits(next);
+    if (!isSubmitting && next.every(digit => digit.length === 1)) {
+      handleConfirm(next.join(''));
+    }
   };
 
   return (
@@ -102,7 +105,7 @@ export default function LoginScreen() {
                 onDigitsChange={handleDigitsChange}
                 onBack={handleBack}
                 onResend={handleResend}
-                onConfirm={handleConfirm}
+                onConfirm={() => handleConfirm(digits.join(''))}
                 isSubmitting={isSubmitting}
                 error={error}
               />
