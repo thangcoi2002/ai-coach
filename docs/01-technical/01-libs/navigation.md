@@ -23,4 +23,4 @@
 
 ## Việc còn lại theo design handoff
 
-34 màn hình trong `design_handoff_akelo_ai_coach` cần được thêm dần vào stack này. Bottom tab bar **ẩn** ở các màn: auth, onboarding, tất cả `gate*`, `processing`, `redo`, và cả 3 `roleplay*` (voice/video/chat) — xử lý bằng cách đặt các màn đó ở một stack riêng ngoài `MainTabNavigator`, hoặc dùng `tabBarStyle: { display: 'none' }` theo route active.
+34 màn hình trong design handoff cần được thêm dần vào stack này. Bottom tab bar **ẩn** ở các màn: auth, onboarding, tất cả `gate*`, `processing`, `redo`, và cả 3 `roleplay*` (voice/video/chat) — xử lý bằng cách đặt các màn đó ở một stack riêng ngoài `MainTabNavigator`, hoặc dùng `tabBarStyle: { display: 'none' }` theo route active.

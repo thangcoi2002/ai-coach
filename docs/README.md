@@ -1,12 +1,18 @@
-# Akelo AI Coach — Docs
+# Docs
 
 Mục lục tài liệu kỹ thuật. Setup chạy app thì xem [README.md](../README.md) ở gốc repo.
+
+## 02-product/ Sản phẩm
+
+| Tài liệu | Nội dung |
+|---|---|
+| [overview.md](02-product/overview.md) | App cần làm gì, 34 màn hình theo design handoff, trạng thái đã code/chưa code, tóm tắt endpoint AI Gateway liên quan, rủi ro/điểm cần chốt |
 
 ## 01-technical/ Tài liệu kỹ thuật
 
 ### 01-libs/ Thư viện ngoài mặc định
 
-Một app React Native khởi tạo mới chỉ có sẵn `react`, `react-native` và bộ công cụ build/test (`@babel/*`, `@react-native/*`, `eslint`, `jest`, `prettier`, `typescript`...). Các file dưới đây mô tả **từng thư viện được cài thêm**: cài để làm gì, dùng cho tính năng/màn hình nào (đối chiếu design handoff `~/Downloads/design_handoff_akelo_ai_coach`), và trạng thái hiện tại trong code — để mở lại project không cần hỏi lại "lib này để làm gì".
+Một app React Native khởi tạo mới chỉ có sẵn `react`, `react-native` và bộ công cụ build/test (`@babel/*`, `@react-native/*`, `eslint`, `jest`, `prettier`, `typescript`...). Các file dưới đây mô tả **từng thư viện được cài thêm**: cài để làm gì, dùng cho tính năng/màn hình nào (đối chiếu design handoff — cung cấp riêng, không nằm trong repo), và trạng thái hiện tại trong code — để mở lại project không cần hỏi lại "lib này để làm gì".
 
 | Tài liệu | Nhóm | Thư viện | Trạng thái |
 |---|---|---|---|
