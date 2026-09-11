@@ -1,0 +1,130 @@
+name: Publish Android release
+run-name: Publish new ${{ inputs.bump }} version from ${{ github.ref_name }} by @${{ github.actor }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: 'Version part to bump'
+        required: true
+        type: choice
+        default: 'build'
+        options:
+          - major
+          - minor
+          - patch
+          - build
+      create-release:
+        description: 'Create GitHub release'
+        required: true
+        type: boolean
+        default: true
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  publish-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22.x'
+          cache: 'npm'
+      - run: npm ci
+      - name: Bump version and sync android/app/build.gradle
+        id: bump
+        env:
+          BUMP: ${{ inputs.bump }}
+          BUILD_NUMBER: ${{ github.run_number }}
+        run: |
+          VERSION=$(node scripts/sync-app-version.js)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+      - name: Commit and tag
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git add package.json android/app/build.gradle
+          git commit -m "Release v${{ steps.bump.outputs.version }}"
+          git tag "v${{ steps.bump.outputs.version }}"
+          git push origin HEAD:${{ github.ref_name }}
+          git push origin "v${{ steps.bump.outputs.version }}"
+    outputs:
+      version: ${{ steps.bump.outputs.version }}
+
+  create-release:
+    if: ${{ inputs.create-release == true }}
+    needs: publish-version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.publish-version.outputs.version }}
+          name: v${{ needs.publish-version.outputs.version }}
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+
+  build-android:
+    if: ${{ inputs.create-release == true }}
+    needs: [publish-version, create-release]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: v${{ needs.publish-version.outputs.version }}
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22.x'
+          cache: 'npm'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - run: npm ci
+      - name: Decode upload keystore
+        run: echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/my-upload-key.keystore
+      - name: Build release APK and AAB
+        working-directory: android
+        env:
+          ORG_GRADLE_PROJECT_MYAPP_UPLOAD_STORE_FILE: my-upload-key.keystore
+          ORG_GRADLE_PROJECT_MYAPP_UPLOAD_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ORG_GRADLE_PROJECT_MYAPP_UPLOAD_STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ORG_GRADLE_PROJECT_MYAPP_UPLOAD_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: ./gradlew assembleRelease bundleRelease
+      - name: Rename artifacts with version
+        run: |
+          VERSION="${{ needs.publish-version.outputs.version }}"
+          mkdir -p release-artifacts
+          cp android/app/build/outputs/apk/release/app-release.apk "release-artifacts/AiCoach-${VERSION}.apk"
+          cp android/app/build/outputs/bundle/release/app-release.aab "release-artifacts/AiCoach-${VERSION}.aab"
+      - name: Upload artifacts to release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.publish-version.outputs.version }}
+          files: release-artifacts/*
+
+  summary:
+    if: always()
+    needs: [publish-version, create-release, build-android]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Summary
+        run: |
+          echo "## Publish Summary" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Item | Status |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|------|--------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Version** | \`v${{ needs.publish-version.outputs.version }}\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Publish version** | ${{ needs.publish-version.result }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Create release** | ${{ needs.create-release.result }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Build Android** | ${{ needs.build-android.result }} |" >> "$GITHUB_STEP_SUMMARY"
