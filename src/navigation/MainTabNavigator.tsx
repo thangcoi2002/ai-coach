@@ -1,8 +1,8 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
-import HomeScreen from '../screens/HomeScreen';
-import ProfileScreen from '../screens/ProfileScreen';
+import HomeScreen from '@/screens/HomeScreen';
+import ProfileScreen from '@/screens/ProfileScreen';
 import type { MainTabParamList } from './types';
 
 type TabIconProps = { color: string; size: number };

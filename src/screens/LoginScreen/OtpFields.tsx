@@ -1,6 +1,6 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { TextInput, View, type TextInputKeyPressEvent } from 'react-native';
-import { brand } from '../../theme/colors';
+import { brand } from '@/theme/colors';
 
 export const OTP_LENGTH = 6;
 
@@ -16,6 +16,7 @@ type Props = {
 /** Six single-digit boxes that auto-advance forward and backspace backwards. */
 export default function OtpFields({ digits, onChange, autoFocus = false }: Props) {
   const inputs = useRef<Array<TextInputInstance | null>>([]);
+  const [focusedIndex, setFocusedIndex] = useState(autoFocus ? 0 : -1);
 
   const focus = (index: number) => {
     if (index >= 0 && index < OTP_LENGTH) {
@@ -53,17 +54,21 @@ export default function OtpFields({ digits, onChange, autoFocus = false }: Props
   };
 
   return (
-    <View className="flex-row justify-between gap-2.5">
+    <View className="flex-row gap-2">
       {digits.map((digit, index) => (
         <TextInput
           key={index}
           ref={element => {
             inputs.current[index] = element;
           }}
-          className="h-14 min-w-0 flex-1 rounded-xl border border-brand-border bg-brand-surface p-0 text-center text-[22px] font-bold text-brand-ink"
+          className={`h-14 min-w-0 flex-1 rounded-2xl border-[1.5px] bg-brand-surface p-0 text-center text-xl font-bold text-brand-ink ${
+            focusedIndex === index ? 'border-brand-accent' : 'border-brand-ink/14'
+          }`}
           value={digit}
           onChangeText={handleChangeText(index)}
           onKeyPress={handleKeyPress(index)}
+          onFocus={() => setFocusedIndex(index)}
+          onBlur={() => setFocusedIndex(current => (current === index ? -1 : current))}
           keyboardType="number-pad"
           inputMode="numeric"
           maxLength={index === 0 ? OTP_LENGTH : 1}

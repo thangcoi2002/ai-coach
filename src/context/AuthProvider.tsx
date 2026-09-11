@@ -6,7 +6,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { setAuthToken } from '../services/api';
+import { setAuthToken } from '@/services/api';
 import {
   clearSession,
   loadSession,
@@ -15,7 +15,7 @@ import {
   verifyOtp as verifyOtpRequest,
   type AuthUser,
   type Session,
-} from '../services/auth.service';
+} from '@/services/auth.service';
 
 type AuthContextValue = {
   user: AuthUser | null;

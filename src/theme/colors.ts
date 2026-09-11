@@ -1,22 +1,20 @@
 /**
- * Auth flow palette.
+ * Akelo design tokens (auth + onboarding).
  *
  * Mirrors `theme.extend.colors.brand` in tailwind.config.js exactly — keep both
  * in sync. This typed copy exists for the callers that cannot go through a
- * className: the SVG gradient stops, `placeholderTextColor`, spinner colors.
+ * className: SVG icon colors, `placeholderTextColor`, spinner colors.
  */
 export const brand = {
-  bg: '#FDF4F0',
-  gradientFrom: '#FBD9CB',
-  gradientTo: '#FDEEE7',
+  page: '#FCFCFC',
   surface: '#FFFFFF',
-  ink: '#0D0D0C',
-  body: '#4C4A46',
-  muted: '#8B877F',
-  accent: '#C64A2A',
-  accentPressed: '#9B3A24',
-  accentSoft: '#D9A18E',
-  logoAccent: '#E15F3D',
-  border: '#E3C7BB',
-  inputBorder: '#F0DED6',
+  card: '#F5F5F5',
+  ink: '#111111',
+  divider: '#D8D8D8',
+  meta: '#454545',
+  body: '#777777',
+  placeholder: '#94A3B8',
+  accent: '#FA6545',
+  accentPressed: '#D24C2E',
+  accentTint: '#FFF1EC',
 } as const;

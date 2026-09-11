@@ -1,17 +1,15 @@
 import React, { useEffect } from 'react';
 import BootSplash from 'react-native-bootsplash';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import MainTabNavigator from './MainTabNavigator';
-import NotificationsScreen from '../screens/NotificationsScreen';
-import LoginScreen from '../screens/LoginScreen';
-import { useAuth } from '../context/AuthProvider';
-import type { RootStackParamList } from './types';
-
-const Stack = createNativeStackNavigator<RootStackParamList>();
+import { useAuth } from '@/context/AuthProvider';
+import { useSetting } from '@/context/SettingProvider';
+import AuthNavigator from './AuthNavigator';
+import AppNavigator from './AppNavigator';
 
 export default function RootNavigator() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
+  const { loading: areSettingsLoading } = useSetting();
+  const isLoading = isAuthLoading || areSettingsLoading;
 
   useEffect(() => {
     if (!isLoading) {
@@ -25,20 +23,7 @@ export default function RootNavigator() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {isAuthenticated ? (
-          <>
-            <Stack.Screen name="MainTabs" component={MainTabNavigator} />
-            <Stack.Screen
-              name="Notifications"
-              component={NotificationsScreen}
-              options={{ headerShown: true, title: 'Notifications' }}
-            />
-          </>
-        ) : (
-          <Stack.Screen name="Login" component={LoginScreen} />
-        )}
-      </Stack.Navigator>
+      {isAuthenticated ? <AppNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );
 }

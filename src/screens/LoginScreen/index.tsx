@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StatusBar, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import AuthBackdrop from '../components/auth/AuthBackdrop';
-import OtpStep from '../components/auth/OtpStep';
-import { OTP_LENGTH } from '../components/auth/OtpFields';
-import SignInStep from '../components/auth/SignInStep';
-import { useAuth } from '../context/AuthProvider';
-import { isValidEmail } from '../utils/email';
+import OtpStep from './OtpStep';
+import { OTP_LENGTH } from './OtpFields';
+import SignInStep from './SignInStep';
+import { useAuth } from '@/context/AuthProvider';
+import { isValidEmail } from '@/utils/email';
 
 type Step = 'signin' | 'otp';
 
@@ -74,16 +73,15 @@ export default function LoginScreen() {
   };
 
   return (
-    <View className="flex-1">
+    <View className="flex-1 bg-brand-page">
       <StatusBar barStyle="dark-content" />
-      <AuthBackdrop />
       <SafeAreaView className="flex-1" edges={['top', 'bottom']}>
         <KeyboardAvoidingView
           className="flex-1"
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <ScrollView
             className="flex-1"
-            contentContainerClassName="grow px-5 pb-5 pt-9"
+            contentContainerClassName="grow"
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}>
             {step === 'signin' ? (

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
-import { useAuth } from '../context/AuthProvider';
+import { useAuth } from '@/context/AuthProvider';
 
 export default function ProfileScreen() {
   const { user, logout } = useAuth();
