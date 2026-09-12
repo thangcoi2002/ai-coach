@@ -1,6 +1,7 @@
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthProvider } from '@/context/AuthProvider';
 import { SettingProvider } from '@/context/SettingProvider';
+import { ThemeProvider } from '@/context/ThemeProvider';
 import { NotificationProvider } from '@/context/NotificationProvider';
 import { composeProviders } from './composeProviders';
 
@@ -11,6 +12,7 @@ import { composeProviders } from './composeProviders';
 export const AppProviders = composeProviders([
   SafeAreaProvider,
   SettingProvider,
+  ThemeProvider,
   AuthProvider,
   NotificationProvider,
 ]);

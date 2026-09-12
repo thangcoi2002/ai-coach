@@ -45,13 +45,15 @@ export default function OtpStep({
   };
 
   return (
-    <View className="flex-1 bg-brand-page px-5 pb-24 pt-[58px]">
+    <View className="flex-1 bg-brand-page px-5 pb-24 pt-[58px] dark:bg-brandDark-page">
       <View className="h-[38px] justify-center">
         <BackButton onPress={onBack} />
       </View>
 
-      <Text className="mt-3.5 text-xl font-bold tracking-[-0.02em] text-brand-ink">Nhập mã</Text>
-      <Text className="mt-1.5 text-[13px] font-medium text-brand-ink/55">
+      <Text className="mt-3.5 text-xl font-bold tracking-[-0.02em] text-brand-ink dark:text-brandDark-ink">
+        Nhập mã
+      </Text>
+      <Text className="mt-1.5 text-[13px] font-medium text-brand-ink/55 dark:text-brandDark-ink/55">
         Đã gửi tới {maskEmail(email)}
       </Text>
 
@@ -60,34 +62,44 @@ export default function OtpStep({
       </View>
 
       <View className="mt-5 flex-row items-baseline justify-center gap-1.5">
-        <Text className="text-[13px] font-medium text-brand-ink/55">Chưa nhận được mã?</Text>
+        <Text className="text-[13px] font-medium text-brand-ink/55 dark:text-brandDark-ink/55">
+          Chưa nhận được mã?
+        </Text>
         {secondsLeft > 0 ? (
-          <Text className="text-[13px] font-bold text-brand-accent-pressed">
+          <Text className="text-[13px] font-bold text-brand-accent-pressed dark:text-brandDark-accent-pressed">
             Gửi lại sau {secondsLeft} giây
           </Text>
         ) : (
           <Pressable accessibilityRole="button" onPress={handleResend} hitSlop={8}>
-            <Text className="text-[13px] font-bold text-brand-accent-pressed">Gửi lại</Text>
+            <Text className="text-[13px] font-bold text-brand-accent-pressed dark:text-brandDark-accent-pressed">
+              Gửi lại
+            </Text>
           </Pressable>
         )}
       </View>
 
       {__DEV__ && (
-        <View className="mt-5 flex-row items-start gap-2.5 rounded-2xl bg-brand-card p-3.5">
-          <View className="mt-1.5 h-[5px] w-[5px] rounded-full bg-brand-accent" />
-          <Text className="flex-1 text-[13px] font-semibold leading-[19.5px] text-brand-ink/70">
+        <View className="mt-5 flex-row items-start gap-2.5 rounded-2xl bg-brand-card p-3.5 dark:bg-brandDark-card">
+          <View className="mt-1.5 h-[5px] w-[5px] rounded-full bg-brand-accent dark:bg-brandDark-accent" />
+          <Text className="flex-1 text-[13px] font-semibold leading-[19.5px] text-brand-ink/70 dark:text-brandDark-ink/70">
             Bản demo: gõ sáu số bất kỳ.
           </Text>
         </View>
       )}
 
-      {error && <Text className="mt-3 text-center text-[13px] text-brand-accent-pressed">{error}</Text>}
+      {error && (
+        <Text className="mt-3 text-center text-[13px] text-brand-accent-pressed dark:text-brandDark-accent-pressed">
+          {error}
+        </Text>
+      )}
 
       <View className="flex-1" />
 
       <PrimaryButton label="Xác nhận mã" onPress={onConfirm} disabled={!isComplete} loading={isSubmitting} />
       <Pressable accessibilityRole="button" onPress={onBack} hitSlop={8} className="mt-2.5">
-        <Text className="text-center text-[13px] font-semibold text-brand-ink/55">Dùng email khác</Text>
+        <Text className="text-center text-[13px] font-semibold text-brand-ink/55 dark:text-brandDark-ink/55">
+          Dùng email khác
+        </Text>
       </Pressable>
     </View>
   );

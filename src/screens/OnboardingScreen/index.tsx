@@ -18,6 +18,7 @@ import {
 import PrimaryButton from '@/components/PrimaryButton';
 import Wordmark from '@/components/Wordmark';
 import { useSetting } from '@/context/SettingProvider';
+import { useThemeColors } from '@/context/ThemeProvider';
 
 type Page = {
   key: 'scenario' | 'document' | 'goal';
@@ -48,23 +49,25 @@ const PAGES: Page[] = [
 ];
 
 function FeatureCards() {
+  const colors = useThemeColors();
+
   return (
     <View className="mt-1.5 flex-row gap-2.5">
-      <View className="flex-1 gap-2 rounded-2xl border border-brand-ink/10 bg-brand-surface p-4">
-        <View className="h-8 w-8 items-center justify-center rounded-[11px] bg-brand-card">
-          <FileText size={20} color="#111111" />
+      <View className="flex-1 gap-2 rounded-2xl border border-brand-ink/10 bg-brand-surface p-4 dark:border-brandDark-ink/10 dark:bg-brandDark-surface">
+        <View className="h-8 w-8 items-center justify-center rounded-[11px] bg-brand-card dark:bg-brandDark-card">
+          <FileText size={20} color={colors.ink} />
         </View>
-        <Text className="text-[15px] font-bold text-brand-ink">Phân tích</Text>
-        <Text className="text-[13px] font-medium text-brand-ink/55">
+        <Text className="text-[15px] font-bold text-brand-ink dark:text-brandDark-ink">Phân tích</Text>
+        <Text className="text-[13px] font-medium text-brand-ink/55 dark:text-brandDark-ink/55">
           Cuộc đã xảy ra
         </Text>
       </View>
-      <View className="flex-1 gap-2 rounded-2xl border border-brand-ink/10 bg-brand-surface p-4">
-        <View className="h-8 w-8 items-center justify-center rounded-[11px] bg-brand-card">
-          <View className="h-[15px] w-[9px] rounded-[5px] bg-brand-accent" />
+      <View className="flex-1 gap-2 rounded-2xl border border-brand-ink/10 bg-brand-surface p-4 dark:border-brandDark-ink/10 dark:bg-brandDark-surface">
+        <View className="h-8 w-8 items-center justify-center rounded-[11px] bg-brand-card dark:bg-brandDark-card">
+          <View className="h-[15px] w-[9px] rounded-[5px] bg-brand-accent dark:bg-brandDark-accent" />
         </View>
-        <Text className="text-[15px] font-bold text-brand-ink">Luyện tập</Text>
-        <Text className="text-[13px] font-medium text-brand-ink/55">
+        <Text className="text-[15px] font-bold text-brand-ink dark:text-brandDark-ink">Luyện tập</Text>
+        <Text className="text-[13px] font-medium text-brand-ink/55 dark:text-brandDark-ink/55">
           Cuộc sắp tới
         </Text>
       </View>
@@ -74,6 +77,7 @@ function FeatureCards() {
 
 export default function OnboardingScreen() {
   const { editSetting } = useSetting();
+  const colors = useThemeColors();
   const [index, setIndex] = useState(0);
   const [pageWidth, setPageWidth] = useState(Dimensions.get('window').width);
   const scrollRef = useRef<React.ComponentRef<typeof ScrollView>>(null);
@@ -102,7 +106,7 @@ export default function OnboardingScreen() {
 
   return (
     <View
-      className="flex-1 bg-brand-page"
+      className="flex-1 bg-brand-page dark:bg-brandDark-page"
       onLayout={e => setPageWidth(e.nativeEvent.layout.width)}
     >
       <SafeAreaView className="flex-1" edges={['top', 'bottom']}>
@@ -114,7 +118,7 @@ export default function OnboardingScreen() {
               onPress={dismissOnboarding}
               hitSlop={8}
             >
-              <Text className="text-[13px] font-bold text-brand-ink/50">
+              <Text className="text-[13px] font-bold text-brand-ink/50 dark:text-brandDark-ink/50">
                 Bỏ qua
               </Text>
             </Pressable>
@@ -134,13 +138,13 @@ export default function OnboardingScreen() {
               style={{ width: pageWidth }}
               className="justify-center gap-4 px-5 py-6"
             >
-              <View className="h-14 w-14 items-center justify-center rounded-[20px] bg-brand-accent-tint">
-                <page.Icon color="#FA6545" size={28} />
+              <View className="h-14 w-14 items-center justify-center rounded-[20px] bg-brand-accent-tint dark:bg-brandDark-accent-tint">
+                <page.Icon color={colors.accent} size={28} />
               </View>
-              <Text className="mt-2 text-[28px] font-bold leading-[35px] tracking-[-0.02em] text-brand-ink">
+              <Text className="mt-2 text-[28px] font-bold leading-[35px] tracking-[-0.02em] text-brand-ink dark:text-brandDark-ink">
                 {page.title}
               </Text>
-              <Text className="text-[15px] font-medium leading-6 text-brand-ink/72">
+              <Text className="text-[15px] font-medium leading-6 text-brand-ink/72 dark:text-brandDark-ink/72">
                 {page.body}
               </Text>
               {page.key === 'document' && <FeatureCards />}
@@ -154,7 +158,9 @@ export default function OnboardingScreen() {
               <View
                 key={page.key}
                 className={`h-1.5 rounded-full ${
-                  i === index ? 'w-5 bg-brand-accent' : 'w-1.5 bg-gray-300'
+                  i === index
+                    ? 'w-5 bg-brand-accent dark:bg-brandDark-accent'
+                    : 'w-1.5 bg-gray-300 dark:bg-brandDark-divider'
                 }`}
               />
             ))}

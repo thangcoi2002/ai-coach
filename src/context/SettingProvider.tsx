@@ -7,6 +7,7 @@ import React, {
   useState,
 } from 'react';
 import { getSettings, updateSettings } from '@/services/setting.service';
+import { DEFAULT_SETTINGS_VALUE } from '@/constant/local-storage';
 import type { Setting } from '@/types/setting.type';
 
 type SettingContextValue = Setting & {
@@ -17,7 +18,7 @@ type SettingContextValue = Setting & {
 const SettingContext = createContext<SettingContextValue | undefined>(undefined);
 
 export function SettingProvider({ children }: { children: React.ReactNode }) {
-  const [setting, setSetting] = useState<Setting>({ showOnboarding: true });
+  const [setting, setSetting] = useState<Setting>(DEFAULT_SETTINGS_VALUE);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
