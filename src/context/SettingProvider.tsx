@@ -1,18 +1,14 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { getSettings, updateSettings } from '@/services/setting.service';
+import { LocalStorageService } from '@/services/storage.service';
 import { DEFAULT_SETTINGS_VALUE } from '@/constant/local-storage';
 import type { Setting } from '@/types/setting.type';
 
 type SettingContextValue = Setting & {
   loading: boolean;
   editSetting: (patch: Partial<Setting>) => Promise<void>;
+  /** Wipes everything kept on the device and returns the app to its defaults. */
+  resetLocalData: () => Promise<void>;
 };
 
 const SettingContext = createContext<SettingContextValue | undefined>(undefined);
@@ -31,9 +27,16 @@ export function SettingProvider({ children }: { children: React.ReactNode }) {
     setSetting(await updateSettings(patch));
   }, []);
 
+  // Clears the whole store, not just the settings key: settings are all that is kept
+  // in AsyncStorage today, and the point is to leave nothing behind from a past run.
+  const resetLocalData = useCallback(async () => {
+    await LocalStorageService.removeAll();
+    setSetting(DEFAULT_SETTINGS_VALUE);
+  }, []);
+
   const value = useMemo(
-    () => ({ ...setting, loading, editSetting }),
-    [setting, loading, editSetting],
+    () => ({ ...setting, loading, editSetting, resetLocalData }),
+    [setting, loading, editSetting, resetLocalData],
   );
 
   return <SettingContext.Provider value={value}>{children}</SettingContext.Provider>;

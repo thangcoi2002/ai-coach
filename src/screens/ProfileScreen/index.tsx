@@ -1,17 +1,38 @@
 import React from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { LogOut, Mail } from 'lucide-react-native';
+import { LogOut, Mail, Trash2 } from 'lucide-react-native';
 import BackHeaderRow from '@/components/BackHeaderRow';
 import { useAuth } from '@/context/AuthProvider';
+import { useSetting } from '@/context/SettingProvider';
 import { useThemeColors } from '@/context/ThemeProvider';
 import ThemeSettingSection from './ThemeSettingSection';
 import { cardShadow } from '@/theme/card';
 
 export default function ProfileScreen() {
   const { user, logout } = useAuth();
+  const { resetLocalData } = useSetting();
   const colors = useThemeColors();
   const initial = (user?.name ?? user?.email ?? '?').trim().charAt(0).toUpperCase();
+
+  const confirmResetLocalData = () => {
+    Alert.alert(
+      'Xoá dữ liệu trên máy?',
+      'Xoá cài đặt và phiên đăng nhập đang lưu. Bạn sẽ bị đăng xuất và app trở lại như mới cài.',
+      [
+        { text: 'Huỷ', style: 'cancel' },
+        {
+          text: 'Xoá',
+          style: 'destructive',
+          // logout() last: it swaps this screen out, so everything else must be done by then.
+          onPress: async () => {
+            await resetLocalData();
+            await logout();
+          },
+        },
+      ],
+    );
+  };
 
   return (
     <View className="flex-1 bg-brand-page dark:bg-brandDark-page">
@@ -70,6 +91,19 @@ export default function ProfileScreen() {
               Đăng xuất
             </Text>
           </Pressable>
+
+          {/* Debug affordance: wiping the session is not something a real user should reach for. */}
+          {__DEV__ && (
+            <Pressable
+              accessibilityRole="button"
+              onPress={confirmResetLocalData}
+              className="mt-3 flex-row items-center justify-center gap-2 rounded-full border border-brand-divider py-[15px] active:bg-brand-card dark:border-brandDark-divider dark:active:bg-brandDark-card">
+              <Trash2 size={18} color={colors.body} />
+              <Text className="text-[15px] font-semibold text-brand-body dark:text-brandDark-body">
+                Xoá dữ liệu trên máy
+              </Text>
+            </Pressable>
+          )}
         </ScrollView>
       </SafeAreaView>
     </View>
