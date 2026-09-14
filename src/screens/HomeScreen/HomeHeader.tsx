@@ -4,7 +4,7 @@ import { useThemeColors } from '@/context/ThemeProvider';
 
 type Props = {
   name: string | null;
-  onPressAvatar: () => void;
+  onPress: () => void;
 };
 
 /** First name only — "Nguyễn Minh Anh" -> "Anh" mirrors how the design greets by given name. */
@@ -16,24 +16,24 @@ function firstName(name: string | null) {
   return parts[parts.length - 1];
 }
 
-export default function HomeHeader({ name, onPressAvatar }: Props) {
+export default function HomeHeader({ name, onPress }: Props) {
   const colors = useThemeColors();
   const given = firstName(name);
   const initial = (given ?? 'B').charAt(0).toUpperCase();
 
   return (
-    <View className="flex-row items-center gap-3">
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel="Hồ sơ của bạn"
-        onPress={onPressAvatar}
-        hitSlop={8}
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={`Chào ${given ?? 'bạn'}. Mở hồ sơ của bạn.`}
+      onPress={onPress}
+      className="flex-row items-center gap-3">
+      <View
         className="h-11 w-11 items-center justify-center rounded-full"
         style={{ backgroundColor: colors.accentTint }}>
         <Text className="text-lg font-bold text-brand-accent-pressed dark:text-brandDark-accent-pressed">
           {initial}
         </Text>
-      </Pressable>
+      </View>
       <View className="flex-1">
         <Text className="text-xl font-semibold tracking-[-0.01em] text-brand-ink dark:text-brandDark-ink">
           Chào {given ?? 'bạn'} 👋
@@ -42,6 +42,6 @@ export default function HomeHeader({ name, onPressAvatar }: Props) {
           Bước nhỏ, tác động lớn.
         </Text>
       </View>
-    </View>
+    </Pressable>
   );
 }

@@ -1,21 +1,9 @@
 import * as Keychain from 'react-native-keychain';
+import { mockSession } from '@/mock/auth-session.mock';
+import type { AuthUser, Session } from '@/types/auth.type';
 import { api } from './api';
 
 const KEYCHAIN_SERVICE = 'ai-coach-session';
-
-export type AuthUser = {
-  id: string;
-  name: string;
-  email: string;
-};
-
-export type Session = {
-  token: string;
-  user: AuthUser;
-};
-
-/** Any 6-digit code passes in dev; this one is the documented happy path. */
-export const MOCK_OTP = '123456';
 
 /**
  * TODO: remove the mock branches once Backend chính ships the real
@@ -41,10 +29,7 @@ export async function verifyOtp(email: string, code: string): Promise<Session> {
     if (!/^\d{6}$/.test(code)) {
       throw new Error('Invalid code');
     }
-    return {
-      token: 'mock-dev-token',
-      user: { id: 'usr_mock_001', name: 'Test User', email },
-    };
+    return mockSession(email);
   }
   const response = await api.post<{ data: Session }>('/auth/otp/verify', { email, code });
   return response.data.data;
@@ -66,6 +51,21 @@ export async function loadSession(): Promise<Session | null> {
   } catch {
     return null;
   }
+}
+
+/**
+ * Merges a patch into the signed-in user and persists the result. Takes the caller's
+ * session rather than re-reading the Keychain, so a write can't resurrect a session
+ * that was cleared meanwhile, and a missing Keychain entry surfaces as a rejection
+ * instead of a silently dropped update.
+ */
+export async function updateSessionUser(
+  session: Session,
+  patch: Partial<AuthUser>,
+): Promise<Session> {
+  const next = { ...session, user: { ...session.user, ...patch } };
+  await saveSession(next);
+  return next;
 }
 
 export async function clearSession(): Promise<void> {

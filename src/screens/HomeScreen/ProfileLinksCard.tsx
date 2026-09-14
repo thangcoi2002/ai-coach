@@ -1,27 +1,24 @@
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
-import { ChevronRight, ClipboardList, FileText, type LucideIcon } from 'lucide-react-native';
+import { ChevronRight } from 'lucide-react-native';
+import { PROFILE_LINKS } from '@/mock/home-profile-links.mock';
+import type { ProfileLink } from '@/types/home.type';
 import { useThemeColors } from '@/context/ThemeProvider';
 import { cardShadow } from '@/theme/card';
 
-type Row = {
-  key: string;
-  Icon: LucideIcon;
-  label: string;
-  trailing: string;
-};
-
-const ROWS: Row[] = [
-  { key: 'reports', Icon: FileText, label: 'Báo cáo đã có', trailing: '6' },
-  { key: 'reassess', Icon: ClipboardList, label: 'Đánh giá lại các kỹ năng', trailing: '2 tháng 7' },
-];
-
 type Props = {
-  onPressRow: () => void;
+  onPressReports: () => void;
+  onPressReassess: () => void;
 };
 
-export default function ProfileLinksCard({ onPressRow }: Props) {
+export default function ProfileLinksCard({ onPressReports, onPressReassess }: Props) {
   const colors = useThemeColors();
+  // Keyed by ProfileLink['key'], so adding a row without a handler fails to compile
+  // instead of shipping a row that silently does nothing when tapped.
+  const onPressRow: Record<ProfileLink['key'], () => void> = {
+    reports: onPressReports,
+    reassess: onPressReassess,
+  };
 
   return (
     <View>
@@ -31,12 +28,12 @@ export default function ProfileLinksCard({ onPressRow }: Props) {
       <View
         className="mt-3 rounded-[20px] border border-brand-border bg-brand-surface px-4 dark:border-brandDark-border dark:bg-brandDark-surface"
         style={cardShadow}>
-        {ROWS.map((row, index) => (
+        {PROFILE_LINKS.map((row, index) => (
           <Pressable
             key={row.key}
-            onPress={onPressRow}
+            onPress={onPressRow[row.key]}
             className={`flex-row items-center gap-3 py-[14px] ${
-              index < ROWS.length - 1 ? 'border-b border-brand-border dark:border-brandDark-border' : ''
+              index < PROFILE_LINKS.length - 1 ? 'border-b border-brand-border dark:border-brandDark-border' : ''
             }`}>
             <row.Icon size={20} color={colors.meta} />
             <Text className="min-w-0 flex-1 text-[15px] font-medium text-brand-ink dark:text-brandDark-ink">

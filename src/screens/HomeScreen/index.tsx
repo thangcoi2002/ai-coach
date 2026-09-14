@@ -38,13 +38,18 @@ export default function HomeScreen() {
           showsVerticalScrollIndicator={false}>
           <HomeHeader
             name={user?.name ?? null}
-            onPressAvatar={() => navigation.navigate(ROOT_ROUTES.PROFILE)}
+            onPress={() => navigation.navigate(ROOT_ROUTES.PROFILE)}
           />
           <TodaySessionCard onStart={() => navigation.navigate(MAIN_TAB_ROUTES.PRACTICE)} />
           <ProgressStats />
           <CommitmentsCard />
           <SkillsCard />
-          <ProfileLinksCard onPressRow={() => navigation.navigate(MAIN_TAB_ROUTES.ANALYSIS)} />
+          <ProfileLinksCard
+            onPressReports={() => navigation.navigate(MAIN_TAB_ROUTES.ANALYSIS)}
+            onPressReassess={() =>
+              navigation.navigate(ROOT_ROUTES.DIAGNOSTIC_GATE, { mode: 'revisit' })
+            }
+          />
         </ScrollView>
       </SafeAreaView>
     </View>

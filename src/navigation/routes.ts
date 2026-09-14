@@ -8,6 +8,7 @@ import type { NavigatorScreenParams } from '@react-navigation/native';
 export const ROOT_ROUTES = {
   LOGIN: 'Login',
   ONBOARDING: 'Onboarding',
+  DIAGNOSTIC_GATE: 'DiagnosticGate',
   MAIN_TABS: 'MainTabs',
   PROFILE: 'Profile',
 } as const;
@@ -29,6 +30,9 @@ export type MainTabParamList = {
 export type RootStackParamList = {
   [ROOT_ROUTES.LOGIN]: undefined;
   [ROOT_ROUTES.ONBOARDING]: undefined;
+  // Omitted (first login, level === null) vs 'revisit' (re-run from the Home profile
+  // links card) change the copy, the back affordance, and what finishing the flow does.
+  [ROOT_ROUTES.DIAGNOSTIC_GATE]: { mode?: 'revisit' } | undefined;
   [ROOT_ROUTES.MAIN_TABS]: NavigatorScreenParams<MainTabParamList>;
   [ROOT_ROUTES.PROFILE]: undefined;
 };

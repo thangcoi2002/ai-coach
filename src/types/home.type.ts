@@ -6,10 +6,7 @@ export type HomeSkill = {
   iconBg: string;
   iconColor: string;
   name: string;
-} & (
-  | { measured: true; progress: number; score: string }
-  | { measured: false; hint: string }
-);
+} & ({ measured: true; progress: number; score: string } | { measured: false; hint: string });
 
 export type ProgressStat = {
   key: string;
