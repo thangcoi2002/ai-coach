@@ -5,8 +5,12 @@ import { useNavigation, type CompositeNavigationProp } from '@react-navigation/n
 import { useBottomTabBarHeight, type BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useAuth } from '@/context/AuthProvider';
-import { MAIN_TAB_ROUTES, ROOT_ROUTES } from '@/navigation/routes';
-import type { MainTabParamList, RootStackParamList } from '@/navigation/types';
+import {
+  MAIN_TAB_ROUTES,
+  ROOT_ROUTES,
+  type MainTabParamList,
+  type RootStackParamList,
+} from '@/navigation/routes';
 import HomeHeader from './HomeHeader';
 import TodaySessionCard from './TodaySessionCard';
 import ProgressStats from './ProgressStats';

@@ -6,8 +6,7 @@ import AnalysisScreen from '@/screens/AnalysisScreen';
 import NotificationsScreen from '@/screens/NotificationsScreen';
 import CustomTabBar from './CustomTabBar';
 import { useThemeColors } from '@/context/ThemeProvider';
-import { MAIN_TAB_ROUTES } from './routes';
-import type { MainTabParamList } from './types';
+import { MAIN_TAB_ROUTES, type MainTabParamList } from './routes';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 

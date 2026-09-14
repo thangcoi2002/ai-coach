@@ -3,8 +3,8 @@ import BootSplash from 'react-native-bootsplash';
 import { NavigationContainer } from '@react-navigation/native';
 import { useAuth } from '@/context/AuthProvider';
 import { useSetting } from '@/context/SettingProvider';
-import AuthNavigator from './AuthNavigator';
-import AppNavigator from './AppNavigator';
+import GuestNavigator from './GuestNavigator';
+import AuthedNavigator from './AuthedNavigator';
 
 export default function RootNavigator() {
   const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
@@ -23,7 +23,7 @@ export default function RootNavigator() {
 
   return (
     <NavigationContainer>
-      {isAuthenticated ? <AppNavigator /> : <AuthNavigator />}
+      {isAuthenticated ? <AuthedNavigator /> : <GuestNavigator />}
     </NavigationContainer>
   );
 }

@@ -1,15 +1,14 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from '@/screens/LoginScreen';
-import { ROOT_ROUTES } from './routes';
-import type { RootStackParamList } from './types';
-import { useSetting } from '@/context/SettingProvider';
 import OnboardingScreen from '@/screens/OnboardingScreen';
+import { useSetting } from '@/context/SettingProvider';
+import { ROOT_ROUTES, type RootStackParamList } from './routes';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 /** Screens shown while the user is not signed in. */
-export default function AuthNavigator() {
+export default function GuestNavigator() {
   const { showOnboarding } = useSetting();
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>

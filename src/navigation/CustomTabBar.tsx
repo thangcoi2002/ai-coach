@@ -9,8 +9,7 @@ import { Bell, ChartNoAxesCombined, Dumbbell, Home } from 'lucide-react-native';
 import type { LucideIcon } from 'lucide-react-native';
 import { useThemeColors } from '@/context/ThemeProvider';
 import { useNotifications } from '@/context/NotificationProvider';
-import { MAIN_TAB_ROUTES } from './routes';
-import type { MainTabParamList } from './types';
+import { MAIN_TAB_ROUTES, type MainTabParamList } from './routes';
 
 const ICONS: Record<keyof MainTabParamList, LucideIcon> = {
   Home,

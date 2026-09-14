@@ -2,8 +2,7 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MainTabNavigator from './MainTabNavigator';
 import ProfileScreen from '@/screens/ProfileScreen';
-import { ROOT_ROUTES } from './routes';
-import type { RootStackParamList } from './types';
+import { ROOT_ROUTES, type RootStackParamList } from './routes';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -13,7 +12,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
  * one — the design has no OS chrome, and native headerLeft picks up platform styling
  * (e.g. iOS wraps bar buttons in a circular "glass" background) we don't want.
  */
-export default function AppNavigator() {
+export default function AuthedNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name={ROOT_ROUTES.MAIN_TABS} component={MainTabNavigator} />
