@@ -26,7 +26,9 @@ export default function HomeHeader({ name, onPress }: Props) {
       accessibilityRole="button"
       accessibilityLabel={`Chào ${given ?? 'bạn'}. Mở hồ sơ của bạn.`}
       onPress={onPress}
-      className="flex-row items-center gap-3">
+      // self-start keeps the tap target hugging the avatar and text instead of
+      // stretching across the row, so the empty space to the right isn't tappable.
+      className="flex-row items-center gap-3 self-start">
       <View
         className="h-11 w-11 items-center justify-center rounded-full"
         style={{ backgroundColor: colors.accentTint }}>
@@ -34,7 +36,7 @@ export default function HomeHeader({ name, onPress }: Props) {
           {initial}
         </Text>
       </View>
-      <View className="flex-1">
+      <View className="shrink">
         <Text className="text-xl font-semibold tracking-[-0.01em] text-brand-ink dark:text-brandDark-ink">
           Chào {given ?? 'bạn'} 👋
         </Text>
