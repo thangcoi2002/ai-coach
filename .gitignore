@@ -70,6 +70,9 @@ yarn-error.log
 # environment
 .env
 
+# Claude Code
+.claude/
+
 # Yarn
 .yarn/*
 !.yarn/patches

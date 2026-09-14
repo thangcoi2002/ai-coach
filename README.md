@@ -51,13 +51,16 @@ npx tsc --noEmit
 
 ```
 src/
-  components/auth/   Components specific to the sign-in/OTP screens
-  context/           AuthProvider (sign-in state, token)
-  navigation/        Root stack + bottom tab navigator
+  components/        Components shared across screens (buttons, back header...)
+  constant/          App-wide constants (local storage keys, defaults...)
+  context/           AuthProvider (sign-in state, token), SettingProvider, ThemeProvider
+  mock/              *.mock.ts — stand-in data for screens whose API isn't ready
+  navigation/        Root stack + bottom tab navigator, route names in routes.ts
   providers/         Composes the app's providers (theme, auth...)
-  screens/           Screens (Login, Home, Notifications, Profile)
+  screens/           Screens (Login, Home, DiagnosticGate, Notifications, Profile)
   services/          API calls (axios) — api.ts, auth.service.ts
   theme/             Design tokens (colors...)
+  types/             *.type.ts — shared type definitions
   utils/             Utility functions (email validation...)
 docs/                Technical docs — see docs/README.md
 ```
