@@ -13,6 +13,7 @@ export type RootStackParamList = {
   [ROOT_ROUTES.ONBOARDING]: undefined;
   [ROOT_ROUTES.MAIN_TABS]: NavigatorScreenParams<MainTabParamList>;
   [ROOT_ROUTES.PROFILE]: undefined;
+  [ROOT_ROUTES.ROLEPLAY_VIDEO]: undefined;
 };
 
 declare global {

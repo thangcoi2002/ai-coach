@@ -36,6 +36,33 @@ PODS:
   - hermes-engine (250829098.0.16):
     - hermes-engine/Pre-built (= 250829098.0.16)
   - hermes-engine/Pre-built (250829098.0.16)
+  - livekit-react-native (3.0.0):
+    - hermes-engine
+    - livekit-react-native-webrtc
+    - RCTRequired
+    - RCTTypeSafety
+    - React-bridging
+    - React-Core
+    - React-Core-prebuilt
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/core
+    - ReactNativeDependencies
+    - Yoga
+  - livekit-react-native-webrtc (144.2.0):
+    - LiveKitWebRTC (= 144.7559.15)
+    - React-Core
+  - LiveKitWebRTC (144.7559.15)
   - NitroImage (0.15.2):
     - hermes-engine
     - NitroModules
@@ -2289,6 +2316,8 @@ DEPENDENCIES:
   - fmt (from `build/rndeps-facades/fmt`)
   - glog (from `build/rndeps-facades/glog`)
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
+  - "livekit-react-native (from `../node_modules/@livekit/react-native`)"
+  - "livekit-react-native-webrtc (from `../node_modules/@livekit/react-native-webrtc`)"
   - NitroImage (from `../node_modules/react-native-nitro-image`)
   - NitroModules (from `../node_modules/react-native-nitro-modules`)
   - NitroSound (from `../node_modules/react-native-nitro-sound`)
@@ -2387,6 +2416,10 @@ DEPENDENCIES:
   - VisionCamera (from `../node_modules/react-native-vision-camera`)
   - Yoga (from `build/rncore-facades/Yoga`)
 
+SPEC REPOS:
+  trunk:
+    - LiveKitWebRTC
+
 EXTERNAL SOURCES:
   AsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
@@ -2405,6 +2438,10 @@ EXTERNAL SOURCES:
   hermes-engine:
     :podspec: "../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec"
     :tag: hermes-v250829098.0.16
+  livekit-react-native:
+    :path: "../node_modules/@livekit/react-native"
+  livekit-react-native-webrtc:
+    :path: "../node_modules/@livekit/react-native-webrtc"
   NitroImage:
     :path: "../node_modules/react-native-nitro-image"
   NitroModules:
@@ -2607,6 +2644,9 @@ SPEC CHECKSUMS:
   fmt: c7776a2a4b1d7ce88b809a1e4d1f7add0f2369df
   glog: b4427c3119645da795ff09985ba9da909c940c96
   hermes-engine: 6a26e94b4a974cbadc751eed9caa12624c38f226
+  livekit-react-native: fa09687281a020ee06f012e749b49f777c6a9b33
+  livekit-react-native-webrtc: 88f7ad6e6733a5b3f0f25b856e4f9e6cd9b05951
+  LiveKitWebRTC: 6abc86e190722e223fc870284547b6f229288c46
   NitroImage: 94f8bac6b33126e2f9f9679840b64e29b48b108b
   NitroModules: 39d094b4b7bcffc8d2482538c5d9e7f94d4342dc
   NitroSound: e085dd9d3c85f6b8195ed11f4daca446bc0077a6

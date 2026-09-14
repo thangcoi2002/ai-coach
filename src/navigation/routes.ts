@@ -8,6 +8,7 @@ export const ROOT_ROUTES = {
   ONBOARDING: 'Onboarding',
   MAIN_TABS: 'MainTabs',
   PROFILE: 'Profile',
+  ROLEPLAY_VIDEO: 'RoleplayVideo',
 } as const;
 
 export const MAIN_TAB_ROUTES = {
