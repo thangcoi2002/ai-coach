@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { fetchNotifications, type Notification } from '@/services/notification.service';
-
-export type { Notification };
+import { fetchNotifications } from '@/services/notification.service';
+import type { Notification } from '@/types/notification.type';
 
 type NotificationContextValue = {
   notifications: Notification[];

@@ -1,26 +1,11 @@
 import React, { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { Check } from 'lucide-react-native';
+import { COMMITMENTS } from '@/mock/home-commitments.mock';
 import { cardShadow } from '@/theme/card';
 
-type Commitment = {
-  id: string;
-  text: string;
-  done: boolean;
-};
-
-const INITIAL_COMMITMENTS: Commitment[] = [
-  {
-    id: '1',
-    text: 'Nói rõ khó khăn trước khi đề xuất giải pháp.',
-    done: false,
-  },
-  { id: '2', text: 'Chốt lại thời hạn mới bằng một câu cụ thể.', done: false },
-  { id: '3', text: 'Không xin lỗi quá nhiều khi báo tin xấu.', done: true },
-];
-
 export default function CommitmentsCard() {
-  const [commitments, setCommitments] = useState(INITIAL_COMMITMENTS);
+  const [commitments, setCommitments] = useState(COMMITMENTS);
   const open = commitments.filter(c => !c.done);
   const done = commitments.filter(c => c.done);
 

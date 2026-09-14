@@ -2,7 +2,8 @@ import React from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { useNotifications, type Notification } from '@/context/NotificationProvider';
+import { useNotifications } from '@/context/NotificationProvider';
+import type { Notification } from '@/types/notification.type';
 
 function NotificationCard({ notification }: { notification: Notification }) {
   return (

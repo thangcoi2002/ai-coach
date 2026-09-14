@@ -1,72 +1,8 @@
 import React from 'react';
 import { Text, View } from 'react-native';
-import { Brain, Ear, Heart, MessageSquare, Sparkles, type LucideIcon } from 'lucide-react-native';
-import { brand } from '@/theme/colors';
+import { HOME_SKILLS } from '@/mock/home-skills.mock';
 import { cardShadow } from '@/theme/card';
 import { useIsDarkMode, useThemeColors } from '@/context/ThemeProvider';
-
-type Skill = {
-  key: string;
-  Icon: LucideIcon;
-  iconBg: string;
-  iconColor: string;
-  name: string;
-} & (
-  | { measured: true; progress: number; score: string }
-  | { measured: false; hint: string }
-);
-
-const SKILLS: Skill[] = [
-  {
-    key: 'listening',
-    Icon: Ear,
-    iconBg: '#EAF3FF',
-    iconColor: '#3B82D0',
-    name: 'Lắng nghe chủ động',
-    measured: true,
-    progress: 0.65,
-    score: '6.5',
-  },
-  {
-    key: 'feedback',
-    Icon: MessageSquare,
-    iconBg: '#EAF7EF',
-    iconColor: '#2DA968',
-    name: 'Phản hồi xây dựng',
-    measured: true,
-    progress: 0.62,
-    score: '6.2',
-  },
-  {
-    key: 'empathy',
-    Icon: Heart,
-    iconBg: '#F2EBFA',
-    iconColor: '#8558C8',
-    name: 'Giao tiếp thấu cảm',
-    measured: true,
-    progress: 0.61,
-    score: '6.1',
-  },
-  {
-    key: 'composure',
-    Icon: Brain,
-    iconBg: '#FFF5DC',
-    iconColor: '#E4A329',
-    name: 'Kiểm soát cảm xúc',
-    measured: true,
-    progress: 0.65,
-    score: '6.5',
-  },
-  {
-    key: 'eq-selling',
-    Icon: Sparkles,
-    iconBg: brand.card,
-    iconColor: brand.body,
-    name: 'Bán hàng bằng thông minh cảm xúc',
-    measured: false,
-    hint: 'Chưa đo · gửi bản ghi hoặc diễn tập',
-  },
-];
 
 export default function SkillsCard() {
   const isDark = useIsDarkMode();
@@ -79,19 +15,19 @@ export default function SkillsCard() {
           Kỹ năng đang mở
         </Text>
         <Text className="text-xs text-brand-body dark:text-brandDark-body">
-          {SKILLS.length} kỹ năng
+          {HOME_SKILLS.length} kỹ năng
         </Text>
       </View>
       <View
         className="mt-3 rounded-[20px] border border-brand-border bg-brand-surface px-4 dark:border-brandDark-border dark:bg-brandDark-surface"
         style={cardShadow}>
-        {SKILLS.map((skill, index) => {
+        {HOME_SKILLS.map((skill, index) => {
           const iconColor = skill.measured ? skill.iconColor : colors.body;
           return (
             <View
               key={skill.key}
               className={`flex-row items-center gap-3 py-[13px] ${
-                index < SKILLS.length - 1 ? 'border-b border-brand-border dark:border-brandDark-border' : ''
+                index < HOME_SKILLS.length - 1 ? 'border-b border-brand-border dark:border-brandDark-border' : ''
               }`}>
               <View
                 className="h-9 w-9 items-center justify-center rounded-xl"
