@@ -29,7 +29,7 @@ export default function HomeScreen() {
   const tabBarHeight = useBottomTabBarHeight();
 
   return (
-    <View className="flex-1 bg-brand-page dark:bg-brandDark-page">
+    <View className="flex-1 bg-brand-page">
       <SafeAreaView className="flex-1" edges={['top']}>
         <ScrollView
           className="flex-1"

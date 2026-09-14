@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
-import { useThemeColors } from '@/context/ThemeProvider';
+import { brand } from '@/theme/colors';
 
 type Props = {
   name: string | null;
@@ -17,7 +17,6 @@ function firstName(name: string | null) {
 }
 
 export default function HomeHeader({ name, onPress }: Props) {
-  const colors = useThemeColors();
   const given = firstName(name);
   const initial = (given ?? 'B').charAt(0).toUpperCase();
 
@@ -31,18 +30,14 @@ export default function HomeHeader({ name, onPress }: Props) {
       className="flex-row items-center gap-3 self-start">
       <View
         className="h-11 w-11 items-center justify-center rounded-full"
-        style={{ backgroundColor: colors.accentTint }}>
-        <Text className="text-lg font-bold text-brand-accent-pressed dark:text-brandDark-accent-pressed">
-          {initial}
-        </Text>
+        style={{ backgroundColor: brand.accentTint }}>
+        <Text className="text-lg font-bold text-brand-accent-pressed">{initial}</Text>
       </View>
       <View className="shrink">
-        <Text className="text-xl font-semibold tracking-[-0.01em] text-brand-ink dark:text-brandDark-ink">
+        <Text className="text-xl font-semibold tracking-[-0.01em] text-brand-ink">
           Chào {given ?? 'bạn'} 👋
         </Text>
-        <Text className="mt-0.5 text-[13px] text-brand-body dark:text-brandDark-body">
-          Bước nhỏ, tác động lớn.
-        </Text>
+        <Text className="mt-0.5 text-[13px] text-brand-body">Bước nhỏ, tác động lớn.</Text>
       </View>
     </Pressable>
   );

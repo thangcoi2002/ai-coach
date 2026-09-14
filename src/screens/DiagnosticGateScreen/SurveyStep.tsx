@@ -42,29 +42,24 @@ export default function SurveyStep({ onBack, onNext }: MethodStepProps) {
   return (
     <StepLayout badge="Cách 2 · Khảo sát nhanh" onBack={handleBack} scrollKey={index}>
       <View className="mt-4 flex-row items-baseline justify-between">
-        <Text className="text-[13px] font-bold text-brand-body dark:text-brandDark-body">
+        <Text className="text-[13px] font-bold text-brand-body">
           Câu {index + 1} / {SURVEY_QUESTIONS.length}
         </Text>
-        <Text className="text-[11px] font-bold tracking-[0.08em] text-brand-accent dark:text-brandDark-accent">
+        <Text className="text-[11px] font-bold tracking-[0.08em] text-brand-accent">
           {question.skill}
         </Text>
       </View>
-      <View className="mt-2 h-1.5 rounded-[3px] bg-brand-ink/12 dark:bg-brandDark-ink/12">
-        <View
-          className="h-full rounded-[3px] bg-brand-accent dark:bg-brandDark-accent"
-          style={{ width: `${progress}%` }}
-        />
+      <View className="mt-2 h-1.5 rounded-[3px] bg-brand-ink/12">
+        <View className="h-full rounded-[3px] bg-brand-accent" style={{ width: `${progress}%` }} />
       </View>
 
-      <Text className="mt-5 text-[11px] font-bold tracking-[0.08em] text-brand-body dark:text-brandDark-body">
+      <Text className="mt-5 text-[11px] font-bold tracking-[0.08em] text-brand-body">
         TÌNH HUỐNG
       </Text>
-      <Text className="mt-2 text-[20px] font-bold leading-[26px] tracking-[-0.02em] text-brand-ink dark:text-brandDark-ink">
+      <Text className="mt-2 text-[20px] font-bold leading-[26px] tracking-[-0.02em] text-brand-ink">
         {question.question}
       </Text>
-      <Text className="mt-2 text-[13px] font-bold text-brand-body dark:text-brandDark-body">
-        Bạn thường làm gì nhất?
-      </Text>
+      <Text className="mt-2 text-[13px] font-bold text-brand-body">Bạn thường làm gì nhất?</Text>
 
       <View className="mt-4 gap-2">
         {question.options.map((option, optionIndex) => {
@@ -76,17 +71,15 @@ export default function SurveyStep({ onBack, onNext }: MethodStepProps) {
               onPress={() => setAnswers(current => ({ ...current, [index]: optionIndex }))}
               className={`flex-row items-start gap-2.5 rounded-2xl border-[1.5px] p-3.5 ${
                 active
-                  ? 'border-brand-accent bg-brand-card dark:border-brandDark-accent dark:bg-brandDark-card'
-                  : 'border-brand-ink/12 bg-brand-surface dark:border-brandDark-ink/12 dark:bg-brandDark-surface'
+                  ? 'border-brand-accent bg-brand-card'
+                  : 'border-brand-ink/12 bg-brand-surface'
               }`}>
               <View
                 className={`mt-0.5 h-4 w-4 rounded-full border-[1.5px] ${
-                  active
-                    ? 'border-brand-accent bg-brand-accent dark:border-brandDark-accent dark:bg-brandDark-accent'
-                    : 'border-brand-ink/30 dark:border-brandDark-ink/30'
+                  active ? 'border-brand-accent bg-brand-accent' : 'border-brand-ink/30'
                 }`}
               />
-              <Text className="min-w-0 flex-1 text-[15px] font-semibold leading-[23px] text-brand-ink dark:text-brandDark-ink">
+              <Text className="min-w-0 flex-1 text-[15px] font-semibold leading-[23px] text-brand-ink">
                 {option}
               </Text>
             </Pressable>

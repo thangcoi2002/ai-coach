@@ -7,5 +7,4 @@ export const cardShadow = {
   elevation: 2,
 };
 
-export const cardClassName =
-  'rounded-[20px] border border-brand-border bg-brand-surface dark:border-brandDark-border dark:bg-brandDark-surface';
+export const cardClassName = 'rounded-[20px] border border-brand-border bg-brand-surface';

@@ -5,14 +5,12 @@ import { LogOut, Mail, Trash2 } from 'lucide-react-native';
 import BackHeaderRow from '@/components/BackHeaderRow';
 import { useAuth } from '@/context/AuthProvider';
 import { useSetting } from '@/context/SettingProvider';
-import { useThemeColors } from '@/context/ThemeProvider';
-import ThemeSettingSection from './ThemeSettingSection';
 import { cardShadow } from '@/theme/card';
+import { brand } from '@/theme/colors';
 
 export default function ProfileScreen() {
   const { user, logout } = useAuth();
   const { resetLocalData } = useSetting();
-  const colors = useThemeColors();
   const initial = (user?.name ?? user?.email ?? '?').trim().charAt(0).toUpperCase();
 
   const confirmResetLocalData = () => {
@@ -35,7 +33,7 @@ export default function ProfileScreen() {
   };
 
   return (
-    <View className="flex-1 bg-brand-page dark:bg-brandDark-page">
+    <View className="flex-1 bg-brand-page">
       <SafeAreaView className="flex-1" edges={['top', 'bottom']}>
         <BackHeaderRow />
         <ScrollView
@@ -45,51 +43,39 @@ export default function ProfileScreen() {
           <View className="items-center gap-3">
             <View
               className="h-20 w-20 items-center justify-center rounded-full"
-              style={{ backgroundColor: colors.accentTint }}>
-              <Text className="text-3xl font-bold text-brand-accent-pressed dark:text-brandDark-accent-pressed">
-                {initial}
-              </Text>
+              style={{ backgroundColor: brand.accentTint }}>
+              <Text className="text-3xl font-bold text-brand-accent-pressed">{initial}</Text>
             </View>
             {user && (
               <View className="items-center gap-0.5">
-                <Text className="text-xl font-semibold text-brand-ink dark:text-brandDark-ink">
-                  {user.name}
-                </Text>
-                <Text className="text-sm text-brand-body dark:text-brandDark-body">
-                  {user.email}
-                </Text>
+                <Text className="text-xl font-semibold text-brand-ink">{user.name}</Text>
+                <Text className="text-sm text-brand-body">{user.email}</Text>
               </View>
             )}
           </View>
 
           {user && (
             <View
-              className="mt-8 rounded-[20px] border border-brand-border bg-brand-surface px-4 dark:border-brandDark-border dark:bg-brandDark-surface"
+              className="mt-8 rounded-[20px] border border-brand-border bg-brand-surface px-4"
               style={cardShadow}>
               <View className="flex-row items-center gap-3 py-[14px]">
-                <Mail size={20} color={colors.meta} />
-                <Text className="min-w-0 flex-1 text-[15px] font-medium text-brand-ink dark:text-brandDark-ink">
+                <Mail size={20} color={brand.meta} />
+                <Text className="min-w-0 flex-1 text-[15px] font-medium text-brand-ink">
                   Email công ty
                 </Text>
-                <Text className="text-[13px] text-brand-body dark:text-brandDark-body">
-                  {user.email}
-                </Text>
+                <Text className="text-[13px] text-brand-body">{user.email}</Text>
               </View>
             </View>
           )}
-
-          <ThemeSettingSection />
 
           <View className="flex-1" />
 
           <Pressable
             accessibilityRole="button"
             onPress={logout}
-            className="flex-row items-center justify-center gap-2 rounded-full border border-brand-accent-pressed/30 py-[15px] active:bg-brand-accent-tint dark:border-brandDark-accent-pressed/30 dark:active:bg-brandDark-accent-tint">
-            <LogOut size={18} color={colors.accentPressed} />
-            <Text className="text-[15px] font-semibold text-brand-accent-pressed dark:text-brandDark-accent-pressed">
-              Đăng xuất
-            </Text>
+            className="flex-row items-center justify-center gap-2 rounded-full border border-brand-accent-pressed/30 py-[15px] active:bg-brand-accent-tint">
+            <LogOut size={18} color={brand.accentPressed} />
+            <Text className="text-[15px] font-semibold text-brand-accent-pressed">Đăng xuất</Text>
           </Pressable>
 
           {/* Debug affordance: wiping the session is not something a real user should reach for. */}
@@ -97,9 +83,9 @@ export default function ProfileScreen() {
             <Pressable
               accessibilityRole="button"
               onPress={confirmResetLocalData}
-              className="mt-3 flex-row items-center justify-center gap-2 rounded-full border border-brand-divider py-[15px] active:bg-brand-card dark:border-brandDark-divider dark:active:bg-brandDark-card">
-              <Trash2 size={18} color={colors.body} />
-              <Text className="text-[15px] font-semibold text-brand-body dark:text-brandDark-body">
+              className="mt-3 flex-row items-center justify-center gap-2 rounded-full border border-brand-divider py-[15px] active:bg-brand-card">
+              <Trash2 size={18} color={brand.body} />
+              <Text className="text-[15px] font-semibold text-brand-body">
                 Xoá dữ liệu trên máy
               </Text>
             </Pressable>

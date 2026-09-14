@@ -5,19 +5,17 @@ import PracticeScreen from '@/screens/PracticeScreen';
 import AnalysisScreen from '@/screens/AnalysisScreen';
 import NotificationsScreen from '@/screens/NotificationsScreen';
 import CustomTabBar from './CustomTabBar';
-import { useThemeColors } from '@/context/ThemeProvider';
 import { MAIN_TAB_ROUTES, type MainTabParamList } from './routes';
+import { brand } from '@/theme/colors';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
 export default function MainTabNavigator() {
-  const colors = useThemeColors();
-
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        sceneStyle: { backgroundColor: colors.page },
+        sceneStyle: { backgroundColor: brand.page },
       }}
       tabBar={renderTabBar}>
       <Tab.Screen name={MAIN_TAB_ROUTES.HOME} component={HomeScreen} />

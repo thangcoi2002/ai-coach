@@ -5,7 +5,6 @@ import OtpStep from './OtpStep';
 import { OTP_LENGTH } from './OtpFields';
 import SignInStep from './SignInStep';
 import { useAuth } from '@/context/AuthProvider';
-import { useIsDarkMode } from '@/context/ThemeProvider';
 import { isValidEmail } from '@/utils/email';
 
 type Step = 'signin' | 'otp';
@@ -14,7 +13,6 @@ const emptyOtp = () => Array<string>(OTP_LENGTH).fill('');
 
 export default function LoginScreen() {
   const { requestOtp, verifyOtp } = useAuth();
-  const isDarkMode = useIsDarkMode();
   const [step, setStep] = useState<Step>('signin');
   const [email, setEmail] = useState('');
   const [digits, setDigits] = useState<string[]>(emptyOtp);
@@ -78,8 +76,8 @@ export default function LoginScreen() {
   };
 
   return (
-    <View className="flex-1 bg-brand-page dark:bg-brandDark-page">
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+    <View className="flex-1 bg-brand-page">
+      <StatusBar barStyle="dark-content" />
       <SafeAreaView className="flex-1" edges={['top', 'bottom']}>
         <KeyboardAvoidingView
           className="flex-1"

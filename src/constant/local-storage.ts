@@ -6,5 +6,4 @@ export const LOCAL_STORAGE_KEYS = {
 
 export const DEFAULT_SETTINGS_VALUE: Setting = {
   showOnboarding: true,
-  themeMode: 'system',
 };

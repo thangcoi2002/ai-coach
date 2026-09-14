@@ -15,10 +15,8 @@ export default function StepTopRow({ badge, onBack }: Props) {
   return (
     <View className="h-9 flex-row items-center justify-between">
       {onBack ? <BackButton onPress={onBack} /> : <Wordmark />}
-      <View className="rounded-full bg-brand-card px-2.5 py-[5px] dark:bg-brandDark-card">
-        <Text className="text-[11px] font-bold text-brand-ink dark:text-brandDark-ink">
-          {badge}
-        </Text>
+      <View className="rounded-full bg-brand-card px-2.5 py-[5px]">
+        <Text className="text-[11px] font-bold text-brand-ink">{badge}</Text>
       </View>
     </View>
   );

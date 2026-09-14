@@ -7,9 +7,9 @@ import {
 } from '@react-navigation/bottom-tabs';
 import { Bell, ChartNoAxesCombined, Dumbbell, Home } from 'lucide-react-native';
 import type { LucideIcon } from 'lucide-react-native';
-import { useThemeColors } from '@/context/ThemeProvider';
 import { useNotifications } from '@/context/NotificationProvider';
 import { MAIN_TAB_ROUTES, type MainTabParamList } from './routes';
+import { brand } from '@/theme/colors';
 
 const ICONS: Record<keyof MainTabParamList, LucideIcon> = {
   Home,
@@ -33,14 +33,10 @@ const shadowStyle = {
   elevation: 8,
 };
 
-export default function CustomTabBar({
-  state,
-  navigation,
-}: BottomTabBarProps) {
+export default function CustomTabBar({ state, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
   const reportHeight = useContext(BottomTabBarHeightCallbackContext);
   const { unreadCount } = useNotifications();
-  const colors = useThemeColors();
 
   const handleLayout = (event: LayoutChangeEvent) => {
     reportHeight?.(event.nativeEvent.layout.height);
@@ -53,7 +49,7 @@ export default function CustomTabBar({
       className="absolute inset-x-0 bottom-0 px-4 pt-2"
       style={{ paddingBottom: Math.max(insets.bottom - 10, 8) }}>
       <View
-        className="flex-row rounded-[28px] border border-brand-ink/5 bg-brand-surface px-2 py-2 dark:border-brandDark-ink/10 dark:bg-brandDark-surface"
+        className="flex-row rounded-[28px] border border-brand-ink/5 bg-brand-surface px-2 py-2"
         style={shadowStyle}>
         {state.routes.map((route, index) => {
           const routeName = route.name as keyof MainTabParamList;
@@ -81,22 +77,20 @@ export default function CustomTabBar({
               className="flex-1 items-center gap-1 py-1">
               <View
                 className={`h-9 w-9 items-center justify-center rounded-[14px] ${
-                  isFocused ? 'bg-brand-accent-tint dark:bg-brandDark-accent-tint' : ''
+                  isFocused ? 'bg-brand-accent-tint' : ''
                 }`}>
                 <Icon
-                  color={isFocused ? colors.accent : colors.body}
+                  color={isFocused ? brand.accent : brand.body}
                   size={22}
                   strokeWidth={isFocused ? 2.25 : 2}
                 />
                 {routeName === MAIN_TAB_ROUTES.NOTIFICATIONS && unreadCount > 0 && (
-                  <View className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-brand-accent dark:bg-brandDark-accent" />
+                  <View className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-brand-accent" />
                 )}
               </View>
               <Text
                 className={`text-[11px] ${
-                  isFocused
-                    ? 'font-bold text-brand-accent dark:text-brandDark-accent'
-                    : 'font-medium text-brand-body dark:text-brandDark-body'
+                  isFocused ? 'font-bold text-brand-accent' : 'font-medium text-brand-body'
                 }`}>
                 {LABELS[routeName]}
               </Text>

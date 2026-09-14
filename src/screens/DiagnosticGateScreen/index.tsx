@@ -96,7 +96,7 @@ export default function DiagnosticGateScreen() {
   const MethodStep = step === 'gate' || step === 'result' ? null : METHOD_STEPS[step];
 
   return (
-    <View className="flex-1 bg-brand-page dark:bg-brandDark-page">
+    <View className="flex-1 bg-brand-page">
       <SafeAreaView className="flex-1" edges={['top', 'bottom']}>
         {step === 'gate' && (
           <GateStep isRevisit={isRevisit} onPickMethod={setStep} onExit={goToApp} />

@@ -35,8 +35,8 @@ export default function PrimaryButton({
       onPress={onPress}
       disabled={isInactive}
       style={isInactive ? undefined : shadowStyle}
-      className={`w-full flex-row items-center justify-center gap-2 rounded-full bg-brand-accent p-[17px] dark:bg-brandDark-accent ${
-        isInactive ? 'opacity-50' : 'active:bg-brand-accent-pressed dark:active:bg-brandDark-accent-pressed'
+      className={`w-full flex-row items-center justify-center gap-2 rounded-full bg-brand-accent p-[17px] ${
+        isInactive ? 'opacity-50' : 'active:bg-brand-accent-pressed'
       } ${className}`}>
       {loading ? (
         <ActivityIndicator color="#FFFFFF" />

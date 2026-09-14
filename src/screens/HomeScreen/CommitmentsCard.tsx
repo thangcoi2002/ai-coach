@@ -10,33 +10,25 @@ export default function CommitmentsCard() {
   const done = commitments.filter(c => c.done);
 
   const toggle = (id: string) => {
-    setCommitments(current =>
-      current.map(c => (c.id === id ? { ...c, done: !c.done } : c)),
-    );
+    setCommitments(current => current.map(c => (c.id === id ? { ...c, done: !c.done } : c)));
   };
 
   return (
     <View>
       <View className="flex-row items-center justify-between gap-2.5">
-        <Text className="text-[17px] font-semibold text-brand-ink dark:text-brandDark-ink">
-          Tôi sẽ chú ý để thay đổi
-        </Text>
-        <Text className="text-[13px] font-semibold text-brand-accent dark:text-brandDark-accent">
-          Tất cả ›
-        </Text>
+        <Text className="text-[17px] font-semibold text-brand-ink">Tôi sẽ chú ý để thay đổi</Text>
+        <Text className="text-[13px] font-semibold text-brand-accent">Tất cả ›</Text>
       </View>
       <View
-        className="mt-3 rounded-[20px] border border-brand-border bg-brand-surface px-4 dark:border-brandDark-border dark:bg-brandDark-surface"
-        style={cardShadow}
-      >
+        className="mt-3 rounded-[20px] border border-brand-border bg-brand-surface px-4"
+        style={cardShadow}>
         {open.map(item => (
           <Pressable
             key={item.id}
             onPress={() => toggle(item.id)}
-            className="flex-row items-center gap-3 border-b border-brand-border py-3 dark:border-brandDark-border"
-          >
-            <View className="mt-0.5 h-[22px] w-[22px] rounded-full border-[1.5px] border-brand-divider dark:border-brandDark-divider" />
-            <Text className="min-w-0 flex-1 text-sm leading-[21px] text-brand-ink dark:text-brandDark-ink">
+            className="flex-row items-center gap-3 border-b border-brand-border py-3">
+            <View className="mt-0.5 h-[22px] w-[22px] rounded-full border-[1.5px] border-brand-divider" />
+            <Text className="min-w-0 flex-1 text-sm leading-[21px] text-brand-ink">
               {item.text}
             </Text>
           </Pressable>
@@ -45,8 +37,7 @@ export default function CommitmentsCard() {
           <Pressable
             key={item.id}
             onPress={() => toggle(item.id)}
-            className="my-2 flex-row items-center gap-3 rounded-[14px] bg-[#EAF7EF] px-3 py-3 dark:bg-[#15271B]"
-          >
+            className="my-2 flex-row items-center gap-3 rounded-[14px] bg-[#EAF7EF] px-3 py-3">
             <View className="h-7 w-7 items-center justify-center rounded-full bg-[#2DA968]">
               <Check size={16} color="#FFFFFF" />
             </View>
@@ -54,7 +45,7 @@ export default function CommitmentsCard() {
               <Text className="text-[11px] font-semibold tracking-[0.06em] text-[#2DA968]">
                 ĐÃ LÀM ĐƯỢC
               </Text>
-              <Text className="mt-0.5 text-sm font-medium leading-[21px] text-brand-ink dark:text-brandDark-ink">
+              <Text className="mt-0.5 text-sm font-medium leading-[21px] text-brand-ink">
                 {item.text}
               </Text>
             </View>

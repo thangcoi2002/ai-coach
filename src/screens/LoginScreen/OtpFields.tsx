@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { TextInput, View, type TextInputKeyPressEvent } from 'react-native';
-import { useThemeColors } from '@/context/ThemeProvider';
+import { brand } from '@/theme/colors';
 
 export const OTP_LENGTH = 6;
 
@@ -15,7 +15,6 @@ type Props = {
 
 /** Six single-digit boxes that auto-advance forward and backspace backwards. */
 export default function OtpFields({ digits, onChange, autoFocus = false }: Props) {
-  const colors = useThemeColors();
   const inputs = useRef<Array<TextInputInstance | null>>([]);
   const [focusedIndex, setFocusedIndex] = useState(autoFocus ? 0 : -1);
 
@@ -67,10 +66,8 @@ export default function OtpFields({ digits, onChange, autoFocus = false }: Props
           ref={element => {
             inputs.current[index] = element;
           }}
-          className={`h-20 min-w-0 flex-1 rounded-2xl border-[1.5px] bg-brand-surface p-0 text-center text-xl font-bold text-brand-ink dark:bg-brandDark-surface dark:text-brandDark-ink ${
-            focusedIndex === index
-              ? 'border-brand-accent dark:border-brandDark-accent'
-              : 'border-brand-ink/14 dark:border-brandDark-ink/14'
+          className={`h-20 min-w-0 flex-1 rounded-2xl border-[1.5px] bg-brand-surface p-0 text-center text-xl font-bold text-brand-ink ${
+            focusedIndex === index ? 'border-brand-accent' : 'border-brand-ink/14'
           }`}
           value={digit}
           onChangeText={handleChangeText(index)}
@@ -82,7 +79,7 @@ export default function OtpFields({ digits, onChange, autoFocus = false }: Props
           maxLength={index === 0 ? OTP_LENGTH : 1}
           textContentType="oneTimeCode"
           autoComplete="sms-otp"
-          selectionColor={colors.accent}
+          selectionColor={brand.accent}
           autoFocus={autoFocus && index === 0}
           accessibilityLabel={`Chữ số thứ ${index + 1}`}
         />
