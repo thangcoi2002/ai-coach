@@ -23,6 +23,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     reactNativeFactory = factory
 
     window = UIWindow(frame: UIScreen.main.bounds)
+    window?.backgroundColor = UIColor { traitCollection in
+      traitCollection.userInterfaceStyle == .dark
+        ? UIColor(red: 11.0 / 255, green: 11.0 / 255, blue: 12.0 / 255, alpha: 1)
+        : UIColor(red: 252.0 / 255, green: 252.0 / 255, blue: 252.0 / 255, alpha: 1)
+    }
 
     factory.startReactNative(
       withModuleName: "AiCoach",
