@@ -21,6 +21,21 @@ module.exports = {
           border: '#F0F0F0',
         },
       },
+      /**
+       * Opacity steps the design uses that Tailwind's default scale lacks. Colour
+       * modifiers such as `text-brand-ink/72` read from this scale, and a step that
+       * isn't here generates no class at all — the element silently falls back to its
+       * default colour instead of failing, so every value in use must be declared.
+       */
+      opacity: {
+        12: '0.12',
+        14: '0.14',
+        16: '0.16',
+        18: '0.18',
+        45: '0.45',
+        55: '0.55',
+        72: '0.72',
+      },
     },
   },
   plugins: [],
