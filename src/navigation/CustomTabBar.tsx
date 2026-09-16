@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { Pressable, Text, View, type LayoutChangeEvent } from 'react-native';
+import React, { useContext, useEffect } from 'react';
+import { Pressable, Text, View, type LayoutChangeEvent, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   BottomTabBarHeightCallbackContext,
@@ -33,7 +33,7 @@ const shadowStyle = {
   elevation: 8,
 };
 
-export default function CustomTabBar({ state, navigation }: BottomTabBarProps) {
+export default function CustomTabBar({ state, navigation, descriptors }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
   const reportHeight = useContext(BottomTabBarHeightCallbackContext);
   const { unreadCount } = useNotifications();
@@ -41,6 +41,25 @@ export default function CustomTabBar({ state, navigation }: BottomTabBarProps) {
   const handleLayout = (event: LayoutChangeEvent) => {
     reportHeight?.(event.nativeEvent.layout.height);
   };
+
+  // A full-bleed step (Analysis's `processing` / `redo`) sets its own `tabBarStyle`
+  // option to ask for this — the same option key + `{ display: 'none' }` value the
+  // built-in tab bar honors, just read here ourselves since ours is custom. Reading
+  // it off the *focused* route's descriptor means there's nothing to clean up on
+  // blur: switching to another tab reads that tab's own (unset) option instead.
+  const focusedRoute = state.routes[state.index];
+  const tabBarStyle = descriptors[focusedRoute.key].options.tabBarStyle as ViewStyle | undefined;
+  const hidden = tabBarStyle?.display === 'none';
+
+  useEffect(() => {
+    if (hidden) {
+      reportHeight?.(0);
+    }
+  }, [hidden, reportHeight]);
+
+  if (hidden) {
+    return null;
+  }
 
   return (
     <View
