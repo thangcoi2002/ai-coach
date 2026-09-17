@@ -12,7 +12,7 @@ export default function SurveyStep({ onBack, onNext }: MethodStepProps) {
   const [intakeId, setIntakeId] = useState<string | null>(null);
   const [loadError, setLoadError] = useState(false);
   const [index, setIndex] = useState(0);
-  // Keyed by question index so stepping back shows what the user already answered.
+  // Keyed by question index so the pick for the current question is easy to look up.
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -38,17 +38,14 @@ export default function SurveyStep({ onBack, onNext }: MethodStepProps) {
   const isLast = questions != null && index === questions.length - 1;
   const progress = questions ? ((index + 1) / questions.length) * 100 : 0;
 
-  const handleBack = () => {
-    if (index === 0) {
-      onBack();
-      return;
-    }
-    setIndex(current => current - 1);
-  };
+  // The stack itself has nowhere to pop back to (this is a step inside
+  // DiagnosticGateScreen, not a route) — claim Android back and the iOS swipe so
+  // they return to the method picker instead of leaving the screen unhandled.
+  usePreventRemove(true, onBack);
 
-  // Answers only live here, so a stack-level back would throw away the whole run.
-  // Claim Android back and the iOS swipe for the chevron's one-question step instead.
-  usePreventRemove(true, handleBack);
+  const goToPreviousQuestion = () => {
+    setIndex(current => Math.max(current - 1, 0));
+  };
 
   const handleNext = async () => {
     if (!questions || !intakeId || picked === -1) {
@@ -102,7 +99,7 @@ export default function SurveyStep({ onBack, onNext }: MethodStepProps) {
   }
 
   return (
-    <StepLayout badge="Cách 2 · Khảo sát nhanh" onBack={handleBack} scrollKey={index}>
+    <StepLayout badge="Cách 2 · Khảo sát nhanh" onBack={onBack} scrollKey={index}>
       <View className="mt-4 flex-row items-baseline justify-between">
         <Text className="text-[13px] font-bold text-brand-body">
           Câu {index + 1} / {questions.length}
@@ -156,13 +153,23 @@ export default function SurveyStep({ onBack, onNext }: MethodStepProps) {
       )}
 
       <View className="flex-1" />
-      <View className="mt-5">
-        <PrimaryButton
-          label={isLast ? 'Xem kết quả' : 'Tiếp'}
-          onPress={handleNext}
-          disabled={picked === -1}
-          loading={isSubmitting}
-        />
+      <View className="mt-5 flex-row gap-2">
+        {index > 0 && (
+          <Pressable
+            accessibilityRole="button"
+            onPress={goToPreviousQuestion}
+            className="items-center justify-center rounded-full border-[1.5px] border-brand-ink/20 px-5 py-[17px]">
+            <Text className="text-[15px] font-bold text-brand-ink">Câu trước</Text>
+          </Pressable>
+        )}
+        <View className="flex-1">
+          <PrimaryButton
+            label={isLast ? 'Xem kết quả' : 'Tiếp'}
+            onPress={handleNext}
+            disabled={picked === -1}
+            loading={isSubmitting}
+          />
+        </View>
       </View>
     </StepLayout>
   );
