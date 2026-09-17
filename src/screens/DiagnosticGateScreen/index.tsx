@@ -8,10 +8,14 @@ import {
   type RouteProp,
 } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useAuth } from '@/context/AuthProvider';
-import { STARTING_SKILL } from '@/mock/result-skills.mock';
+import { useSkills } from '@/context/SkillsProvider';
 import { ROOT_ROUTES, type RootStackParamList } from '@/navigation/routes';
-import type { DiagnosticStep, GateMethod, MethodStepProps } from '@/types/diagnostic.type';
+import type {
+  DiagnosisResult,
+  DiagnosticStep,
+  GateMethod,
+  MethodStepProps,
+} from '@/types/diagnostic.type';
 import GateStep from './GateStep';
 import ReportStep from './ReportStep';
 import SurveyStep from './SurveyStep';
@@ -39,7 +43,7 @@ function isGateMethod(step: DiagnosticStep): step is GateMethod {
 
 /**
  * Diagnostic gate: pick a way to measure the user's level, then either land a
- * first-time signer-in in the app (`level` was null, no MAIN_TABS beneath this
+ * first-time signer-in in the app (no skill measured yet, no MAIN_TABS beneath this
  * screen to go back to) or return a "Đánh giá lại các kỹ năng" revisit to Home
  * (pushed on top of MAIN_TABS, so finishing just pops back). Steps are kept as
  * internal state (like LoginScreen's signin/otp split) rather than separate
@@ -48,14 +52,16 @@ function isGateMethod(step: DiagnosticStep): step is GateMethod {
 export default function DiagnosticGateScreen() {
   const navigation = useNavigation<NavigationProp>();
   const { params } = useRoute<RouteProps>();
-  const { user, updateUser } = useAuth();
+  const { skills, applyDiagnosisResult } = useSkills();
   // Asking to re-measure only counts as a revisit if there is an earlier measurement
   // to compare against — someone who skipped the gate gets the first-time copy.
-  const isRevisit = params?.mode === 'revisit' && user?.level != null;
+  const hasMeasuredSkill = skills?.some(skill => (skill.currentLevel ?? 0) > 0) ?? false;
+  const isRevisit = params?.mode === 'revisit' && hasMeasuredSkill;
   const [step, setStep] = useState<DiagnosticStep>('gate');
   const [sourceLabel, setSourceLabel] = useState('');
-  const [isSaving, setIsSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // Null until a step reports a real diagnosis result — report/media/role steps
+  // aren't wired to the backend yet, so ResultStep falls back to mock skills then.
+  const [diagnosisResult, setDiagnosisResult] = useState<DiagnosisResult | null>(null);
 
   // Android back and the iOS swipe would pop the whole screen mid-measurement; send
   // the user to the method picker instead, matching each step's own chevron. Survey
@@ -74,27 +80,20 @@ export default function DiagnosticGateScreen() {
     }
   };
 
-  const finishWithResult = (label: string) => {
+  const finishWithResult = (label: string, result?: DiagnosisResult) => {
     setSourceLabel(label);
+    setDiagnosisResult(result ?? null);
     setStep('result');
   };
 
-  const saveLevel = async () => {
-    if (isSaving) {
-      return;
+  const saveLevel = () => {
+    // Seeds the skills cache with what was just measured so Home renders it
+    // immediately instead of waiting on its own GET /api/skills round-trip. The
+    // backend already persisted the real result when the method step submitted it.
+    if (diagnosisResult) {
+      applyDiagnosisResult(diagnosisResult);
     }
-    setIsSaving(true);
-    setError(null);
-    try {
-      await updateUser({ level: STARTING_SKILL.level });
-      goToApp();
-    } catch {
-      // Staying put with a retry beats stranding the user: on first login this screen
-      // is the stack root, so there is nowhere to go back to.
-      setError('Không lưu được kết quả. Vui lòng thử lại.');
-    } finally {
-      setIsSaving(false);
-    }
+    goToApp();
   };
 
   const MethodStep = isGateMethod(step) ? METHOD_STEPS[step] : null;
@@ -110,10 +109,9 @@ export default function DiagnosticGateScreen() {
           <ResultStep
             isRevisit={isRevisit}
             sourceLabel={sourceLabel}
+            result={diagnosisResult}
             onSaveLevel={saveLevel}
             onKeepLevel={goToApp}
-            isSaving={isSaving}
-            error={error}
           />
         )}
       </SafeAreaView>

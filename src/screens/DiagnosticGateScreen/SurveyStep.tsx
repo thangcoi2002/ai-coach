@@ -9,20 +9,29 @@ import StepLayout from './StepLayout';
 
 export default function SurveyStep({ onBack, onNext }: MethodStepProps) {
   const [questions, setQuestions] = useState<SurveyQuestion[] | null>(null);
+  const [intakeId, setIntakeId] = useState<string | null>(null);
   const [loadError, setLoadError] = useState(false);
   const [index, setIndex] = useState(0);
   // Keyed by question index so stepping back shows what the user already answered.
   const [answers, setAnswers] = useState<Record<number, number>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const loadQuestions = () => {
+  const loadSurvey = () => {
     setLoadError(false);
     setQuestions(null);
-    DiagnosisService.getSurveyQuestions()
-      .then(setQuestions)
+    setIntakeId(null);
+    // Both are needed before the user can submit at the end, so a failure in either
+    // one is surfaced up front instead of only once they finish answering.
+    Promise.all([DiagnosisService.getSurveyQuestions(), DiagnosisService.startIntake('SURVEY')])
+      .then(([loadedQuestions, loadedIntakeId]) => {
+        setQuestions(loadedQuestions);
+        setIntakeId(loadedIntakeId);
+      })
       .catch(() => setLoadError(true));
   };
 
-  useEffect(loadQuestions, []);
+  useEffect(loadSurvey, []);
 
   const question = questions?.[index];
   const picked = answers[index] ?? -1;
@@ -41,15 +50,32 @@ export default function SurveyStep({ onBack, onNext }: MethodStepProps) {
   // Claim Android back and the iOS swipe for the chevron's one-question step instead.
   usePreventRemove(true, handleBack);
 
-  const handleNext = () => {
-    if (!questions || picked === -1) {
+  const handleNext = async () => {
+    if (!questions || !intakeId || picked === -1) {
       return;
     }
-    if (isLast) {
-      onNext(`Từ khảo sát nhanh, ${questions.length} câu`);
+    if (!isLast) {
+      setIndex(current => current + 1);
       return;
     }
-    setIndex(current => current + 1);
+
+    setSubmitError(null);
+    setIsSubmitting(true);
+    try {
+      // Reaching the last question with a pick means every prior one was already
+      // answered too — "Tiếp" only enables once `answers[index]` is set.
+      const surveyAnswers = questions.map((questionItem, questionIndex) => ({
+        questionId: questionItem.id,
+        optionKey: questionItem.options[answers[questionIndex]].key,
+      }));
+      await DiagnosisService.submitSurvey(intakeId, surveyAnswers);
+      const result = await DiagnosisService.getResult(intakeId);
+      onNext(`Từ khảo sát nhanh, ${questions.length} câu`, result);
+    } catch {
+      setSubmitError('Không nộp được bài khảo sát. Vui lòng thử lại.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (loadError) {
@@ -59,7 +85,7 @@ export default function SurveyStep({ onBack, onNext }: MethodStepProps) {
           <Text className="text-center text-[15px] font-medium text-brand-body">
             Không tải được câu hỏi khảo sát. Vui lòng thử lại.
           </Text>
-          <PrimaryButton label="Thử lại" onPress={loadQuestions} />
+          <PrimaryButton label="Thử lại" onPress={loadSurvey} />
         </View>
       </StepLayout>
     );
@@ -123,12 +149,19 @@ export default function SurveyStep({ onBack, onNext }: MethodStepProps) {
         })}
       </View>
 
+      {submitError && (
+        <Text className="mt-3 text-center text-[13px] text-brand-accent-pressed">
+          {submitError}
+        </Text>
+      )}
+
       <View className="flex-1" />
       <View className="mt-5">
         <PrimaryButton
           label={isLast ? 'Xem kết quả' : 'Tiếp'}
           onPress={handleNext}
           disabled={picked === -1}
+          loading={isSubmitting}
         />
       </View>
     </StepLayout>

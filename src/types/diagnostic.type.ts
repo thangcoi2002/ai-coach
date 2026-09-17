@@ -1,6 +1,9 @@
 /** The four ways a user can have their level measured in the diagnostic gate. */
 export type GateMethod = 'report' | 'survey' | 'media' | 'role';
 
+/** Backend's own spelling of the four methods, used by POST /api/diagnosis/intake. */
+export type IntakeMethod = 'SELI' | 'SURVEY' | 'RECORDING' | 'ROLEPLAY';
+
 /** Steps of the diagnostic gate: the method picker, one step per method, then the result. */
 export type DiagnosticStep = 'gate' | GateMethod | 'result';
 
@@ -8,10 +11,11 @@ export type DiagnosticStep = 'gate' | GateMethod | 'result';
  * Shared contract for the four measurement steps, so the gate can render whichever
  * one the user picked without knowing anything about it. Each step reports its own
  * `sourceLabel` ("Từ khảo sát nhanh, 15 câu") since only it knows how it measured.
+ * `result` is optional since not every step is wired to the real diagnosis result yet.
  */
 export type MethodStepProps = {
   onBack: () => void;
-  onNext: (sourceLabel: string) => void;
+  onNext: (sourceLabel: string, result?: DiagnosisResult) => void;
 };
 
 export type SurveyQuestionOption = {
@@ -31,6 +35,37 @@ export type SurveyQuestion = {
     code: string;
   };
   lang: string;
+};
+
+/** One answered question, as sent to POST /api/diagnosis/survey/submit — the server
+ * looks up the score and skill itself from `questionId`/`optionKey`. */
+export type SurveyAnswer = {
+  questionId: string;
+  optionKey: string;
+};
+
+/** One skill's outcome within a diagnosis result. `score` is a decimal-as-string
+ * (Postgres Decimal column) — parseFloat it before doing math. */
+export type DiagnosisResultSkill = {
+  id: string;
+  name: string;
+  measured: boolean;
+  score: string;
+  level: number;
+  note: string | null;
+};
+
+/** Shape returned by GET /api/diagnosis/{intakeId}/result. */
+export type DiagnosisResult = {
+  intakeId: string;
+  method: IntakeMethod;
+  completedAt: string;
+  startingPoint: {
+    skillId: string;
+    name: string;
+    level: number;
+  };
+  skills: DiagnosisResultSkill[];
 };
 
 export type RoleScenario = {
