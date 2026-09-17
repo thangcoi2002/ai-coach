@@ -1,13 +1,5 @@
 import type { LucideIcon } from 'lucide-react-native';
 
-export type HomeSkill = {
-  key: string;
-  Icon: LucideIcon;
-  iconBg: string;
-  iconColor: string;
-  name: string;
-} & ({ measured: true; progress: number; score: string } | { measured: false; hint: string });
-
 export type ProgressStat = {
   key: string;
   Icon: LucideIcon;
