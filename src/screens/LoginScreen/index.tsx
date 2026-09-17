@@ -60,8 +60,8 @@ export default function LoginScreen() {
       // this screen out, so there is nothing left to navigate to here.
       await verifyOtp(email.trim(), code);
     } catch {
+      // Keep the digits so the user can just fix the wrong one(s) instead of retyping all six.
       setError('Mã xác nhận không đúng hoặc đã hết hạn.');
-      setDigits(emptyOtp());
     } finally {
       setIsSubmitting(false);
     }

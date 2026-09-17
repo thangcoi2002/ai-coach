@@ -66,7 +66,7 @@ export default function OtpFields({ digits, onChange, autoFocus = false }: Props
           ref={element => {
             inputs.current[index] = element;
           }}
-          className={`h-20 min-w-0 flex-1 rounded-2xl border-[1.5px] bg-brand-surface p-0 text-center text-xl font-bold text-brand-ink ${
+          className={`h-20 min-w-0 flex-1 rounded-2xl border-[1.5px] bg-brand-surface p-0 text-center text-2xl font-bold text-brand-ink ${
             focusedIndex === index ? 'border-brand-accent' : 'border-brand-ink/14'
           }`}
           value={digit}
@@ -74,6 +74,8 @@ export default function OtpFields({ digits, onChange, autoFocus = false }: Props
           onKeyPress={handleKeyPress(index)}
           onFocus={() => setFocusedIndex(index)}
           onBlur={() => setFocusedIndex(current => (current === index ? -1 : current))}
+          // Selects the existing digit on focus so typing replaces it outright.
+          selectTextOnFocus
           keyboardType="number-pad"
           inputMode="numeric"
           maxLength={index === 0 ? OTP_LENGTH : 1}
