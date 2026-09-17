@@ -22,20 +22,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     reactNativeDelegate = delegate
     reactNativeFactory = factory
 
-    window = UIWindow(frame: UIScreen.main.bounds)
-    window?.backgroundColor = UIColor { traitCollection in
-      traitCollection.userInterfaceStyle == .dark
-        ? UIColor(red: 11.0 / 255, green: 11.0 / 255, blue: 12.0 / 255, alpha: 1)
-        : UIColor(red: 252.0 / 255, green: 252.0 / 255, blue: 252.0 / 255, alpha: 1)
-    }
-
-    factory.startReactNative(
-      withModuleName: "AiCoach",
-      in: window,
-      launchOptions: launchOptions
-    )
-
     return true
+  }
+
+  func application(
+    _ application: UIApplication,
+    configurationForConnecting connectingSceneSession: UISceneSession,
+    options: UIScene.ConnectionOptions
+  ) -> UISceneConfiguration {
+    let configuration = UISceneConfiguration(
+      name: "Default Configuration",
+      sessionRole: connectingSceneSession.role
+    )
+    configuration.delegateClass = SceneDelegate.self
+    return configuration
   }
 }
 

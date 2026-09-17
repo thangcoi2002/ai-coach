@@ -11,6 +11,7 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		44FA4B4FAD5EE8BD25210D56 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
+		5F20FE2C306F9BC21D941F61 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CECAEDAF2FFCA9EF62A9342 /* SceneDelegate.swift */; };
 		81A4F5AAF1C044C5B5DD1034 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0C02381F99B84B67A0564A38 /* BootSplash.storyboard */; };
 		82393C90109447648BC7F3F5 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D0A02976EC1461A9F908C97 /* Colors.xcassets */; };
 /* End PBXBuildFile section */
@@ -26,6 +27,7 @@
 		5DCACB8F33CDC322A6C60F78 /* libPods-AiCoach.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AiCoach.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D0A02976EC1461A9F908C97 /* Colors.xcassets */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = folder.assetcatalog; name = Colors.xcassets; path = AiCoach/Colors.xcassets; sourceTree = "<group>"; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = AiCoach/AppDelegate.swift; sourceTree = "<group>"; };
+		7CECAEDAF2FFCA9EF62A9342 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SceneDelegate.swift; path = AiCoach/SceneDelegate.swift; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -46,6 +48,7 @@
 			children = (
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				761780EC2CA45674006654EE /* AppDelegate.swift */,
+				7CECAEDAF2FFCA9EF62A9342 /* SceneDelegate.swift */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
 				0C02381F99B84B67A0564A38 /* BootSplash.storyboard */,
@@ -251,6 +254,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				761780ED2CA45674006654EE /* AppDelegate.swift in Sources */,
+				5F20FE2C306F9BC21D941F61 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
