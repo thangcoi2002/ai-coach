@@ -17,6 +17,8 @@ type AuthContextValue = {
   user: AuthUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  /** Dev/debug use only (e.g. copying it for Postman) — never render this to a real user. */
+  accessToken: string | null;
   requestOtp: (email: string) => Promise<void>;
   verifyOtp: (email: string, code: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -85,11 +87,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 
   const logout = useCallback(async () => {
-    if (session?.refreshToken) {
-      // Best-effort: the device must end up signed out locally even if the revoke call fails.
-      await AuthService.requestLogout(session.refreshToken).catch(() => {});
-    }
+    const refreshToken = session?.refreshToken;
+    // Clear locally first so the UI swaps to Login right away; the revoke call is
+    // best-effort and must not hold up the local sign-out while it's in flight.
     await persistSession(null);
+    if (refreshToken) {
+      AuthService.requestLogout(refreshToken).catch(() => {});
+    }
   }, [session, persistSession]);
 
   const value = useMemo(
@@ -97,11 +101,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       user,
       isAuthenticated: user != null,
       isLoading,
+      accessToken: session?.accessToken ?? null,
       requestOtp: AuthService.requestOtp,
       verifyOtp,
       logout,
     }),
-    [user, isLoading, verifyOtp, logout],
+    [user, isLoading, session, verifyOtp, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

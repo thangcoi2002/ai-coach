@@ -28,7 +28,7 @@ type SkillsContextValue = {
 const SkillsContext = createContext<SkillsContextValue | undefined>(undefined);
 
 export function SkillsProvider({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const [skills, setSkills] = useState<Skill[] | null>(null);
   // Starts true (rather than only while a fetch is in flight) so RootNavigator keeps
   // holding the splash screen through the render right after login, before this
@@ -45,13 +45,20 @@ export function SkillsProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
+    // While AuthProvider is still resolving the persisted session, `isAuthenticated`
+    // is a placeholder `false`, not a real answer — deciding "signed out" on it here
+    // would flip this loading flag off a render early, letting RootNavigator hide the
+    // splash before the skills fetch has even started.
+    if (isAuthLoading) {
+      return;
+    }
     if (isAuthenticated) {
       refresh();
     } else {
       setSkills(null);
       setIsLoading(false);
     }
-  }, [isAuthenticated, refresh]);
+  }, [isAuthenticated, isAuthLoading, refresh]);
 
   const applyDiagnosisResult = useCallback((result: DiagnosisResult) => {
     setSkills(current => {
