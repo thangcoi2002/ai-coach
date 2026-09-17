@@ -3,6 +3,7 @@ import { AuthProvider } from '@/context/AuthProvider';
 import { SettingProvider } from '@/context/SettingProvider';
 import { NotificationProvider } from '@/context/NotificationProvider';
 import { SkillsProvider } from '@/context/SkillsProvider';
+import { HomeProvider } from '@/context/HomeProvider';
 import { composeProviders } from './composeProviders';
 
 /**
@@ -14,5 +15,6 @@ export const AppProviders = composeProviders([
   SettingProvider,
   AuthProvider,
   SkillsProvider,
+  HomeProvider,
   NotificationProvider,
 ]);
