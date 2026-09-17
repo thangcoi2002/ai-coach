@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MainTabNavigator from './MainTabNavigator';
 import ProfileScreen from '@/screens/ProfileScreen';
 import DiagnosticGateScreen from '@/screens/DiagnosticGateScreen';
-import { useAuth } from '@/context/AuthProvider';
+import { useSkills } from '@/context/SkillsProvider';
 import { ROOT_ROUTES, type RootStackParamList } from './routes';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -15,10 +15,12 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
  * (e.g. iOS wraps bar buttons in a circular "glass" background) we don't want.
  */
 export default function AuthedNavigator() {
-  const { user } = useAuth();
+  const { skills } = useSkills();
+  // RootNavigator holds the splash screen until skills have loaded, so this reflects
+  // the real catalog by the time it's read — not a race with the fetch starting.
+  const hasMeasuredSkill = skills?.some(skill => (skill.currentLevel ?? 0) > 0) ?? false;
 
-  const initialRouteName =
-    user?.level == null ? ROOT_ROUTES.DIAGNOSTIC_GATE : ROOT_ROUTES.MAIN_TABS;
+  const initialRouteName = hasMeasuredSkill ? ROOT_ROUTES.MAIN_TABS : ROOT_ROUTES.DIAGNOSTIC_GATE;
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={initialRouteName}>

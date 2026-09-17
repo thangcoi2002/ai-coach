@@ -20,8 +20,6 @@ type AuthContextValue = {
   requestOtp: (email: string) => Promise<void>;
   verifyOtp: (email: string, code: string) => Promise<void>;
   logout: () => Promise<void>;
-  /** Merges a patch into the signed-in user and persists it, e.g. after the diagnostic gate sets a starting level. */
-  updateUser: (patch: Partial<AuthUser>) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -94,15 +92,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await persistSession(null);
   }, [session, persistSession]);
 
-  const updateUser = useCallback(
-    async (patch: Partial<AuthUser>) => {
-      if (session) {
-        await persistSession(SessionService.mergeSessionUser(session, patch));
-      }
-    },
-    [session, persistSession],
-  );
-
   const value = useMemo(
     () => ({
       user,
@@ -111,9 +100,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       requestOtp: AuthService.requestOtp,
       verifyOtp,
       logout,
-      updateUser,
     }),
-    [user, isLoading, verifyOtp, logout, updateUser],
+    [user, isLoading, verifyOtp, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
