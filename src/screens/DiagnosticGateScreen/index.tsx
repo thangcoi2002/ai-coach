@@ -33,6 +33,10 @@ const METHOD_STEPS: Record<GateMethod, React.ComponentType<MethodStepProps>> = {
   role: RoleStep,
 };
 
+function isGateMethod(step: DiagnosticStep): step is GateMethod {
+  return step in METHOD_STEPS;
+}
+
 /**
  * Diagnostic gate: pick a way to measure the user's level, then either land a
  * first-time signer-in in the app (`level` was null, no MAIN_TABS beneath this
@@ -93,7 +97,7 @@ export default function DiagnosticGateScreen() {
     }
   };
 
-  const MethodStep = step === 'gate' || step === 'result' ? null : METHOD_STEPS[step];
+  const MethodStep = isGateMethod(step) ? METHOD_STEPS[step] : null;
 
   return (
     <View className="flex-1 bg-brand-page">

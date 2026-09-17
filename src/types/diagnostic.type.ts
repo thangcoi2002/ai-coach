@@ -14,10 +14,23 @@ export type MethodStepProps = {
   onNext: (sourceLabel: string) => void;
 };
 
+export type SurveyQuestionOption = {
+  key: string;
+  text: string;
+};
+
+/** Shape returned by GET /api/diagnosis/survey/questions. */
 export type SurveyQuestion = {
-  skill: string;
+  id: string;
+  situation: string;
   question: string;
-  options: string[];
+  options: SurveyQuestionOption[];
+  skill: {
+    id: string;
+    name: string;
+    code: string;
+  };
+  lang: string;
 };
 
 export type RoleScenario = {
