@@ -1,5 +1,5 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { getSettings, updateSettings } from '@/services/setting.service';
+import { SettingService } from '@/services/setting.service';
 import { LocalStorageService } from '@/services/storage.service';
 import { DEFAULT_SETTINGS_VALUE } from '@/constant/local-storage';
 import type { Setting } from '@/types/setting.type';
@@ -18,13 +18,13 @@ export function SettingProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getSettings()
+    SettingService.getSettings()
       .then(setSetting)
       .finally(() => setLoading(false));
   }, []);
 
   const editSetting = useCallback(async (patch: Partial<Setting>) => {
-    setSetting(await updateSettings(patch));
+    setSetting(await SettingService.updateSettings(patch));
   }, []);
 
   // Clears the whole store, not just the settings key: settings are all that is kept

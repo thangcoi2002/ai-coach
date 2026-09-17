@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { fetchNotifications } from '@/services/notification.service';
+import { NotificationService } from '@/services/notification.service';
 import type { Notification } from '@/types/notification.type';
 
 type NotificationContextValue = {
@@ -13,7 +13,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   useEffect(() => {
-    fetchNotifications().then(setNotifications);
+    NotificationService.fetchNotifications().then(setNotifications);
   }, []);
 
   const value = useMemo<NotificationContextValue>(

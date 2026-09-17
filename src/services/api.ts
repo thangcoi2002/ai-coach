@@ -1,20 +1,33 @@
-import axios from 'axios';
+import axios, {
+  type AxiosInstance,
+  type InternalAxiosRequestConfig,
+} from 'axios';
 import { API_URL } from '@env';
 
-export const api = axios.create({
-  baseURL: API_URL,
-  timeout: 10000,
-});
+class ApiService {
+  public readonly client: AxiosInstance = axios.create({
+    baseURL: API_URL,
+    timeout: 10000,
+  });
 
-let authToken: string | null = null;
+  private authToken: string | null = null;
 
-export function setAuthToken(token: string | null) {
-  authToken = token;
+  constructor() {
+    this.client.interceptors.request.use(this.attachAuthHeader);
+  }
+
+  public setAuthToken(token: string | null) {
+    this.authToken = token;
+  }
+
+  // Arrow field, not a method, so `this` still points at the instance when axios
+  // calls it as a bare callback.
+  private attachAuthHeader = (config: InternalAxiosRequestConfig) => {
+    if (this.authToken) {
+      config.headers.Authorization = `Bearer ${this.authToken}`;
+    }
+    return config;
+  };
 }
 
-api.interceptors.request.use(config => {
-  if (authToken) {
-    config.headers.Authorization = `Bearer ${authToken}`;
-  }
-  return config;
-});
+export const apiService = new ApiService();

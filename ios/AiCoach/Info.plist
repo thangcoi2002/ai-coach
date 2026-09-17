@@ -32,6 +32,16 @@
 		<false/>
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>89.117.54.102</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSIncludesSubdomains</key>
+				<false/>
+			</dict>
+		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Akelo cần quyền truy cập camera để bạn quay video diễn tập và gửi video hội thoại.</string>
@@ -45,6 +55,23 @@
 	<string></string>
 	<key>RCTNewArchEnabled</key>
 	<true/>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<false/>
+		<key>UISceneConfigurations</key>
+		<dict>
+			<key>UIWindowSceneSessionRoleApplication</key>
+			<array>
+				<dict>
+					<key>UISceneConfigurationName</key>
+					<string>Default Configuration</string>
+					<key>UISceneDelegateClassName</key>
+					<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
+				</dict>
+			</array>
+		</dict>
+	</dict>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

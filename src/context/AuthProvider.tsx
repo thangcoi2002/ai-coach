@@ -4,17 +4,13 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
-import { setAuthToken } from '@/services/api';
-import {
-  clearSession,
-  loadSession,
-  requestOtp,
-  saveSession,
-  updateSessionUser,
-  verifyOtp as verifyOtpRequest,
-} from '@/services/auth.service';
+import { apiService } from '@/services/api';
+import { AuthService } from '@/services/auth.service';
+import { SessionService } from '@/services/session.service';
+import { setAuthRefreshHandlers } from '@/services/token-refresh';
 import type { AuthUser, Session } from '@/types/auth.type';
 
 type AuthContextValue = {
@@ -35,47 +31,76 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const user = session?.user ?? null;
 
+  // The 401 interceptor's refresh handler runs outside React and needs the latest
+  // session synchronously, so it reads this ref instead of closing over `session`.
+  const sessionRef = useRef<Session | null>(null);
+
   /** The only place a session reaches both the axios client and React state, so the two can't drift apart. */
   const applySession = useCallback((next: Session | null) => {
-    setAuthToken(next?.token ?? null);
+    sessionRef.current = next;
+    apiService.setAuthToken(next?.accessToken ?? null);
     setSession(next);
   }, []);
 
-  useEffect(() => {
-    loadSession()
-      // A Keychain read that throws must not take the app down with it: the user
-      // just starts signed out rather than the boot promise rejecting unhandled.
-      .catch(() => null)
-      .then(loaded => {
-        if (loaded) {
-          applySession(loaded);
-        }
-      })
-      .finally(() => setIsLoading(false));
-  }, [applySession]);
-
-  const verifyOtp = useCallback(
-    async (email: string, code: string) => {
-      const next = await verifyOtpRequest(email, code);
-      await saveSession(next);
+  /** Persists a session (or clears it, for `null`) and applies it in one step. */
+  const persistSession = useCallback(
+    async (next: Session | null) => {
+      await (next ? SessionService.saveSession(next) : SessionService.clearSession());
       applySession(next);
     },
     [applySession],
   );
 
+  useEffect(() => {
+    SessionService.loadSession()
+      // A Keychain read that throws must not take the app down with it: the user
+      // just starts signed out rather than the boot promise rejecting unhandled.
+      .catch(() => null)
+      .then(loaded => loaded && applySession(loaded))
+      .finally(() => setIsLoading(false));
+
+    setAuthRefreshHandlers({
+      refresh: async () => {
+        const current = sessionRef.current;
+        if (!current) {
+          return null;
+        }
+        try {
+          const pair = await AuthService.refreshTokenPair(current.refreshToken);
+          await persistSession({ ...current, ...pair });
+          return pair.accessToken;
+        } catch {
+          return null;
+        }
+      },
+      onFailure: () => {
+        persistSession(null);
+      },
+    });
+  }, [applySession, persistSession]);
+
+  const verifyOtp = useCallback(
+    async (email: string, code: string) => {
+      await persistSession(await AuthService.verifyOtp(email, code));
+    },
+    [persistSession],
+  );
+
   const logout = useCallback(async () => {
-    await clearSession();
-    applySession(null);
-  }, [applySession]);
+    if (session?.refreshToken) {
+      // Best-effort: the device must end up signed out locally even if the revoke call fails.
+      await AuthService.requestLogout(session.refreshToken).catch(() => {});
+    }
+    await persistSession(null);
+  }, [session, persistSession]);
 
   const updateUser = useCallback(
     async (patch: Partial<AuthUser>) => {
-      if (!session) {
-        return;
+      if (session) {
+        await persistSession(SessionService.mergeSessionUser(session, patch));
       }
-      applySession(await updateSessionUser(session, patch));
     },
-    [session, applySession],
+    [session, persistSession],
   );
 
   const value = useMemo(
@@ -83,7 +108,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       user,
       isAuthenticated: user != null,
       isLoading,
-      requestOtp,
+      requestOtp: AuthService.requestOtp,
       verifyOtp,
       logout,
       updateUser,

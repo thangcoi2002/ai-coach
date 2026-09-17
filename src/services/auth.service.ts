@@ -1,73 +1,54 @@
-import * as Keychain from 'react-native-keychain';
-import { mockSession } from '@/mock/auth-session.mock';
+import { Platform } from 'react-native';
 import type { AuthUser, Session } from '@/types/auth.type';
-import { api } from './api';
+import { DeviceService } from './device.service';
+import { apiService } from './api';
 
-const KEYCHAIN_SERVICE = 'ai-coach-session';
+type TokenPair = {
+  accessToken: string;
+  refreshToken: string;
+  expiresIn: number;
+};
 
-/**
- * TODO: remove the mock branches once Backend chính ships the real
- * /auth/otp/request + /auth/otp/verify pair.
- */
-function delay(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-/** Asks the backend to email a 6-digit sign-in code. */
-export async function requestOtp(email: string): Promise<void> {
-  if (__DEV__) {
-    await delay(500);
-    return;
+export class AuthService {
+  /** Asks the backend to email a 6-digit sign-in code. Always resolves, even for an unknown email. */
+  static async requestOtp(email: string): Promise<void> {
+    await apiService.client.post('/auth/request-otp', { email });
   }
-  await api.post('/auth/otp/request', { email });
-}
 
-/** Exchanges the emailed code for a session. */
-export async function verifyOtp(email: string, code: string): Promise<Session> {
-  if (__DEV__) {
-    await delay(500);
-    if (!/^\d{6}$/.test(code)) {
-      throw new Error('Invalid code');
-    }
-    return mockSession(email);
+  /** Exchanges the emailed code for a token pair, then hydrates the signed-in user. */
+  static async verifyOtp(email: string, code: string): Promise<Session> {
+    const deviceId = await DeviceService.getDeviceId();
+    const response = await apiService.client.post<{ data: TokenPair }>('/auth/verify-otp', {
+      email,
+      code,
+      deviceId,
+      deviceName: `${Platform.OS} app`,
+    });
+    const { accessToken, refreshToken } = response.data.data;
+
+    // /auth/verify-otp only returns the token pair — the user profile comes from /me,
+    // and that call needs the access token just returned, not whatever is currently applied.
+    apiService.setAuthToken(accessToken);
+    const user = await AuthService.fetchMe();
+
+    return { accessToken, refreshToken, user };
   }
-  const response = await api.post<{ data: Session }>('/auth/otp/verify', { email, code });
-  return response.data.data;
-}
 
-export async function saveSession(session: Session): Promise<void> {
-  await Keychain.setGenericPassword('session', JSON.stringify(session), {
-    service: KEYCHAIN_SERVICE,
-  });
-}
-
-export async function loadSession(): Promise<Session | null> {
-  const credentials = await Keychain.getGenericPassword({ service: KEYCHAIN_SERVICE });
-  if (!credentials) {
-    return null;
+  /** Rotates the token pair. Must not be called concurrently — rotating revokes both old tokens immediately. */
+  static async refreshTokenPair(refreshToken: string): Promise<TokenPair> {
+    const response = await apiService.client.post<{ data: TokenPair }>('/auth/refresh', {
+      refreshToken,
+    });
+    return response.data.data;
   }
-  try {
-    return JSON.parse(credentials.password) as Session;
-  } catch {
-    return null;
+
+  /** Revokes the given refresh token server-side. Best-effort: local sign-out proceeds regardless. */
+  static async requestLogout(refreshToken: string): Promise<void> {
+    await apiService.client.post('/auth/logout', { refreshToken });
   }
-}
 
-/**
- * Merges a patch into the signed-in user and persists the result. Takes the caller's
- * session rather than re-reading the Keychain, so a write can't resurrect a session
- * that was cleared meanwhile, and a missing Keychain entry surfaces as a rejection
- * instead of a silently dropped update.
- */
-export async function updateSessionUser(
-  session: Session,
-  patch: Partial<AuthUser>,
-): Promise<Session> {
-  const next = { ...session, user: { ...session.user, ...patch } };
-  await saveSession(next);
-  return next;
-}
-
-export async function clearSession(): Promise<void> {
-  await Keychain.resetGenericPassword({ service: KEYCHAIN_SERVICE });
+  private static async fetchMe(): Promise<AuthUser> {
+    const response = await apiService.client.get<{ data: AuthUser }>('/me');
+    return response.data.data;
+  }
 }

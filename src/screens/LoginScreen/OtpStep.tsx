@@ -72,15 +72,6 @@ export default function OtpStep({
         )}
       </View>
 
-      {__DEV__ && (
-        <View className="mt-5 flex-row items-start gap-2.5 rounded-2xl bg-brand-card p-3.5">
-          <View className="mt-1.5 h-[5px] w-[5px] rounded-full bg-brand-accent" />
-          <Text className="flex-1 text-[13px] font-semibold leading-[19.5px] text-brand-ink/70">
-            Bản demo: gõ sáu số bất kỳ.
-          </Text>
-        </View>
-      )}
-
       {error && (
         <Text className="mt-3 text-center text-[13px] text-brand-accent-pressed">{error}</Text>
       )}
