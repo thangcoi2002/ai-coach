@@ -4,9 +4,6 @@ export type GateMethod = 'report' | 'survey' | 'media' | 'role';
 /** Backend's own spelling of the four methods, used by POST /api/diagnosis/intake. */
 export type IntakeMethod = 'SELI' | 'SURVEY' | 'RECORDING' | 'ROLEPLAY';
 
-/** Steps of the diagnostic gate: the method picker, one step per method, then the result. */
-export type DiagnosticStep = 'gate' | GateMethod | 'result';
-
 /**
  * Shared contract for the four measurement steps, so the gate can render whichever
  * one the user picked without knowing anything about it. Each step reports its own

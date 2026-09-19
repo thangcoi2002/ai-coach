@@ -1,21 +1,18 @@
 import React, { useState } from 'react';
-import { View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import {
-  useNavigation,
-  usePreventRemove,
-  useRoute,
-  type RouteProp,
-} from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+  createNativeStackNavigator,
+  type NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
 import { useSkills } from '@/context/SkillsProvider';
-import { ROOT_ROUTES, type RootStackParamList } from '@/navigation/routes';
-import type {
-  DiagnosisResult,
-  DiagnosticStep,
-  GateMethod,
-  MethodStepProps,
-} from '@/types/diagnostic.type';
+import {
+  GATE_ROUTES,
+  ROOT_ROUTES,
+  type GateStackParamList,
+  type RootStackParamList,
+} from '@/navigation/routes';
+import { brand } from '@/theme/colors';
+import type { DiagnosisResult, GateMethod, MethodStepProps } from '@/types/diagnostic.type';
 import GateStep from './GateStep';
 import ReportStep from './ReportStep';
 import SurveyStep from './SurveyStep';
@@ -29,6 +26,8 @@ type NavigationProp = NativeStackNavigationProp<
 >;
 type RouteProps = RouteProp<RootStackParamList, typeof ROOT_ROUTES.DIAGNOSTIC_GATE>;
 
+const Stack = createNativeStackNavigator<GateStackParamList>();
+
 /** All four share MethodStepProps, so the gate renders whichever one the user picked. */
 const METHOD_STEPS: Record<GateMethod, React.ComponentType<MethodStepProps>> = {
   report: ReportStep,
@@ -37,17 +36,27 @@ const METHOD_STEPS: Record<GateMethod, React.ComponentType<MethodStepProps>> = {
   role: RoleStep,
 };
 
-function isGateMethod(step: DiagnosticStep): step is GateMethod {
-  return step in METHOD_STEPS;
-}
+const METHOD_ROUTES: Record<GateMethod, keyof GateStackParamList> = {
+  report: GATE_ROUTES.REPORT,
+  survey: GATE_ROUTES.SURVEY,
+  media: GATE_ROUTES.MEDIA,
+  role: GATE_ROUTES.ROLE,
+};
+
+const GATE_METHODS = Object.keys(METHOD_STEPS) as GateMethod[];
 
 /**
  * Diagnostic gate: pick a way to measure the user's level, then either land a
  * first-time signer-in in the app (no skill measured yet, no MAIN_TABS beneath this
  * screen to go back to) or return a "Đánh giá lại các kỹ năng" revisit to Home
- * (pushed on top of MAIN_TABS, so finishing just pops back). Steps are kept as
- * internal state (like LoginScreen's signin/otp split) rather than separate
- * routes, since nothing here needs to be deep-linked or to survive an unmount.
+ * (pushed on top of MAIN_TABS, so finishing just pops back).
+ *
+ * The steps are routes of a stack nested here rather than component state, so that
+ * every back affordance — the chevron, Android back, the iOS swipe — pops one step
+ * the same way. Held as state they could only be undone *after* the OS had already
+ * torn the whole screen off, which showed as a flash out to Home and back.
+ * Measurement results live here, above the nested stack, since the step that
+ * produced them is gone by the time the result step reads them.
  */
 export default function DiagnosticGateScreen() {
   const navigation = useNavigation<NavigationProp>();
@@ -57,18 +66,10 @@ export default function DiagnosticGateScreen() {
   // to compare against — someone who skipped the gate gets the first-time copy.
   const hasMeasuredSkill = skills?.some(skill => (skill.currentLevel ?? 0) > 0) ?? false;
   const isRevisit = params?.mode === 'revisit' && hasMeasuredSkill;
-  const [step, setStep] = useState<DiagnosticStep>('gate');
   const [sourceLabel, setSourceLabel] = useState('');
   // Null until a step reports a real diagnosis result — report/media/role steps
   // aren't wired to the backend yet, so ResultStep falls back to mock skills then.
   const [diagnosisResult, setDiagnosisResult] = useState<DiagnosisResult | null>(null);
-
-  // Android back and the iOS swipe would pop the whole screen mid-measurement; send
-  // the user to the method picker instead, matching each step's own chevron. Survey
-  // is absent on purpose: its chevron steps back one question, so it prevents removal
-  // itself rather than being dropped here and losing every answer given so far.
-  const isMidFlow = step === 'report' || step === 'media' || step === 'role';
-  usePreventRemove(isMidFlow, () => setStep('gate'));
 
   const goToApp = () => {
     // Reached from Home there is a screen underneath to pop back to, keeping its tab
@@ -78,12 +79,6 @@ export default function DiagnosticGateScreen() {
     } else {
       navigation.reset({ index: 0, routes: [{ name: ROOT_ROUTES.MAIN_TABS }] });
     }
-  };
-
-  const finishWithResult = (label: string, result?: DiagnosisResult) => {
-    setSourceLabel(label);
-    setDiagnosisResult(result ?? null);
-    setStep('result');
   };
 
   const saveLevel = () => {
@@ -96,16 +91,49 @@ export default function DiagnosticGateScreen() {
     goToApp();
   };
 
-  const MethodStep = isGateMethod(step) ? METHOD_STEPS[step] : null;
-
   return (
-    <View className="flex-1 bg-brand-page">
-      <SafeAreaView className="flex-1" edges={['top', 'bottom']}>
-        {step === 'gate' && (
-          <GateStep isRevisit={isRevisit} onPickMethod={setStep} onExit={goToApp} />
+    <Stack.Navigator
+      screenOptions={{ headerShown: false, contentStyle: { backgroundColor: brand.page } }}>
+      <Stack.Screen name={GATE_ROUTES.PICKER}>
+        {({ navigation: stepNavigation }) => (
+          <GateStep
+            isRevisit={isRevisit}
+            onPickMethod={method => stepNavigation.navigate(METHOD_ROUTES[method])}
+            // The picker is this stack's root, so the OS back affordances fall through
+            // to the root stack: on a revisit that pops to Home, exactly like this
+            // exit. On first login this screen is the *root* stack's root too, so
+            // there is nothing to fall through to and Android back leaves the app —
+            // which is why GateStep only offers a chevron on a revisit.
+            onExit={goToApp}
+          />
         )}
-        {MethodStep && <MethodStep onBack={() => setStep('gate')} onNext={finishWithResult} />}
-        {step === 'result' && (
+      </Stack.Screen>
+
+      {GATE_METHODS.map(method => {
+        const MethodStep = METHOD_STEPS[method];
+        return (
+          <Stack.Screen key={method} name={METHOD_ROUTES[method]}>
+            {({ navigation: stepNavigation }) => (
+              <MethodStep
+                onBack={() => stepNavigation.goBack()}
+                onNext={(label, result) => {
+                  setSourceLabel(label);
+                  setDiagnosisResult(result ?? null);
+                  // Reset rather than replace: the result is terminal — it shows the
+                  // wordmark instead of a back chevron, and both its buttons lead into
+                  // the app. Making it this stack's only route is what keeps the OS
+                  // back affordances agreeing with that, by letting them fall through
+                  // to the root stack the same way "Giữ mức cũ" does.
+                  stepNavigation.reset({ index: 0, routes: [{ name: GATE_ROUTES.RESULT }] });
+                }}
+              />
+            )}
+          </Stack.Screen>
+        );
+      })}
+
+      <Stack.Screen name={GATE_ROUTES.RESULT}>
+        {() => (
           <ResultStep
             isRevisit={isRevisit}
             sourceLabel={sourceLabel}
@@ -114,7 +142,7 @@ export default function DiagnosticGateScreen() {
             onKeepLevel={goToApp}
           />
         )}
-      </SafeAreaView>
-    </View>
+      </Stack.Screen>
+    </Stack.Navigator>
   );
 }

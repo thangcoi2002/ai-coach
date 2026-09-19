@@ -1,8 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import BackButton from '@/components/BackButton';
 import { ANALYSIS_REPORT } from '@/mock/analysis-report.mock';
+import { brand } from '@/theme/colors';
 import ScoreHero from './ScoreHero';
 import HighlightCards from './HighlightCards';
 import SkillsAccordion from './SkillsAccordion';
@@ -13,40 +14,44 @@ import CommitCard from './CommitCard';
 
 export type ReportPage = 0 | 1;
 
+/** The open tab sits raised on white; the other one lets the track show through. */
+const activeTabStyle = {
+  backgroundColor: brand.surface,
+  shadowColor: brand.night,
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.08,
+  shadowRadius: 8,
+  elevation: 1,
+};
+const TAB_LABEL_COLORS = { active: brand.night, inactive: brand.mute };
+
 type Props = {
-  /** Owned by AnalysisScreen, not local state: the redo step (reached from a page-1
-   * moment) fully unmounts this screen, so which tab and moment were open would
-   * otherwise reset every round trip through "Thử nói lại". */
-  page: ReportPage;
-  onChangePage: (page: ReportPage) => void;
-  openMomentIndex: number;
-  onChangeOpenMomentIndex: (momentIndex: number) => void;
   onBack: () => void;
   onPractice: () => void;
   onRehearse: (momentIndex: number) => void;
 };
 
-/** "Kết quả phân tích" — the two-tab report (Điểm và phân tích / Luyện lại). */
-export default function ReportStep({
-  page,
-  onChangePage,
-  openMomentIndex,
-  onChangeOpenMomentIndex,
-  onBack,
-  onPractice,
-  onRehearse,
-}: Props) {
+/**
+ * "Kết quả phân tích" — the two-tab report (Điểm và phân tích / Luyện lại).
+ *
+ * Which tab and moment are open is local state: the redo step is pushed on top of
+ * this one rather than replacing it, so a round trip through "Thử nói lại" comes
+ * back to the report exactly as it was left.
+ */
+export default function ReportStep({ onBack, onPractice, onRehearse }: Props) {
   const tabBarHeight = useBottomTabBarHeight();
   const report = ANALYSIS_REPORT;
   const scrollRef = useRef<React.ComponentRef<typeof ScrollView>>(null);
+  const [page, setPage] = useState<ReportPage>(0);
+  const [openMomentIndex, setOpenMomentIndex] = useState(-1);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ y: 0, animated: false });
   }, [page]);
 
   const openMomentOnTab2 = (momentIndex: number) => {
-    onChangeOpenMomentIndex(momentIndex);
-    onChangePage(1);
+    setOpenMomentIndex(momentIndex);
+    setPage(1);
   };
 
   return (
@@ -68,23 +73,12 @@ export default function ReportStep({
             <Pressable
               key={label}
               accessibilityRole="button"
-              onPress={() => onChangePage(index as ReportPage)}
+              onPress={() => setPage(index as ReportPage)}
               className="min-h-10 flex-1 items-center justify-center rounded-full"
-              style={
-                active
-                  ? {
-                      backgroundColor: '#FFFFFF',
-                      shadowColor: '#0F172A',
-                      shadowOffset: { width: 0, height: 2 },
-                      shadowOpacity: 0.08,
-                      shadowRadius: 8,
-                      elevation: 1,
-                    }
-                  : undefined
-              }>
+              style={active ? activeTabStyle : undefined}>
               <Text
                 className="text-[13px] font-semibold"
-                style={{ color: active ? '#0F172A' : '#64748B' }}>
+                style={{ color: active ? TAB_LABEL_COLORS.active : TAB_LABEL_COLORS.inactive }}>
                 {label}
               </Text>
             </Pressable>
@@ -106,7 +100,7 @@ export default function ReportStep({
             <ReplaySection report={report} onOpenMoment={openMomentOnTab2} />
             <Pressable
               accessibilityRole="button"
-              onPress={() => onChangePage(1)}
+              onPress={() => setPage(1)}
               className="min-h-[54px] flex-row items-center justify-center gap-2 rounded-full bg-brand-ink">
               <Text className="text-[15px] font-semibold text-white">Sang phần luyện lại </Text>
               <Text className="text-[15px] font-semibold text-brand-accent">→</Text>
@@ -118,7 +112,7 @@ export default function ReportStep({
               moments={report.moments}
               themName={report.themName}
               openIndex={openMomentIndex}
-              onToggle={index => onChangeOpenMomentIndex(openMomentIndex === index ? -1 : index)}
+              onToggle={index => setOpenMomentIndex(openMomentIndex === index ? -1 : index)}
               onRehearse={onRehearse}
             />
             <NextStepCard next={report.next} onPractice={onPractice} />

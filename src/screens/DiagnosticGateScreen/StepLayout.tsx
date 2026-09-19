@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { ScrollView, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import StepTopRow from './StepTopRow';
 
 type Props = {
@@ -13,8 +14,10 @@ type Props = {
 };
 
 /**
- * Frame shared by every step: the top row stays pinned while only the content
- * scrolls, and the page padding lives here rather than in each step.
+ * Frame shared by every step: the background and safe area (each step is its own
+ * route, so there is no screen-level wrapper above them), the top row stays pinned
+ * while only the content scrolls, and the page padding lives here rather than in
+ * each step.
  */
 export default function StepLayout({ badge, onBack, scrollKey, children }: Props) {
   const scrollRef = useRef<React.ComponentRef<typeof ScrollView>>(null);
@@ -24,7 +27,7 @@ export default function StepLayout({ badge, onBack, scrollKey, children }: Props
   }, [scrollKey]);
 
   return (
-    <View className="flex-1">
+    <SafeAreaView className="flex-1 bg-brand-page" edges={['top', 'bottom']}>
       <View className="px-5">
         <StepTopRow badge={badge} onBack={onBack} />
       </View>
@@ -35,6 +38,6 @@ export default function StepLayout({ badge, onBack, scrollKey, children }: Props
         showsVerticalScrollIndicator={false}>
         {children}
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }

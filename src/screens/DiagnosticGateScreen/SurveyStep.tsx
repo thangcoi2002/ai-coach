@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, Text, View } from 'react-native';
-import { usePreventRemove } from '@react-navigation/native';
 import PrimaryButton from '@/components/PrimaryButton';
 import { DiagnosisService } from '@/services/diagnosis.service';
 import { brand } from '@/theme/colors';
@@ -37,11 +36,6 @@ export default function SurveyStep({ onBack, onNext }: MethodStepProps) {
   const picked = answers[index] ?? -1;
   const isLast = questions != null && index === questions.length - 1;
   const progress = questions ? ((index + 1) / questions.length) * 100 : 0;
-
-  // The stack itself has nowhere to pop back to (this is a step inside
-  // DiagnosticGateScreen, not a route) — claim Android back and the iOS swipe so
-  // they return to the method picker instead of leaving the screen unhandled.
-  usePreventRemove(true, onBack);
 
   const goToPreviousQuestion = () => {
     setIndex(current => Math.max(current - 1, 0));
