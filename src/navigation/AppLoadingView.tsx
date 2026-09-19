@@ -1,5 +1,8 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated, Easing, Image, View } from 'react-native';
+import { Animated, Easing, View } from 'react-native';
+
+/** Same 100pt logo the native splash shows, so the handover is invisible. */
+const logoSize = { width: 100, height: 100 };
 
 /**
  * Shown whenever the app is between screens with nothing else to render (e.g. skills
@@ -37,7 +40,7 @@ export default function AppLoadingView() {
     <View className="flex-1 items-center justify-center bg-brand-page">
       <Animated.Image
         source={require('../../assets/bootsplash/logo.png')}
-        style={{ width: 100, height: 100, transform: [{ scale }], opacity }}
+        style={[logoSize, { transform: [{ scale }], opacity }]}
         resizeMode="contain"
       />
     </View>
