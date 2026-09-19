@@ -19,7 +19,9 @@ export default function SkillsAccordion({ skills, onOpenMoment }: Props) {
       <Text className="text-[19px] font-semibold tracking-[-0.02em] text-brand-ink">
         Những mặt được thể hiện
       </Text>
-      <Text className="mt-1 text-[13px] text-[#64748B]">Chạm để xem vì sao và nơi nó xuất hiện.</Text>
+      <Text className="mt-1 text-[13px] text-brand-mute">
+        Chạm để xem vì sao và nơi nó xuất hiện.
+      </Text>
       <View className="mt-2 gap-2">
         {skills.map((skill, index) => {
           const open = openIndex === index;
@@ -35,7 +37,7 @@ export default function SkillsAccordion({ skills, onOpenMoment }: Props) {
                 <View className="flex-row items-center gap-2">
                   <View className="min-w-0 flex-1 flex-row flex-wrap items-baseline gap-1.5">
                     <Text className="text-[15px] font-semibold text-brand-ink">{skill.name}</Text>
-                    {skill.sub && <Text className="text-xs text-[#64748B]">{skill.sub}</Text>}
+                    {skill.sub && <Text className="text-xs text-brand-mute">{skill.sub}</Text>}
                   </View>
                   <Text
                     className="text-[13px] font-semibold tabular-nums"
@@ -56,7 +58,7 @@ export default function SkillsAccordion({ skills, onOpenMoment }: Props) {
                     />
                   </View>
                 )}
-                <Text className="mt-2.5 text-[14px] leading-[21px] text-[#1E293B]">
+                <Text className="mt-2.5 text-[14px] leading-[21px] text-brand-prose">
                   {skill.text}
                 </Text>
               </Pressable>
@@ -64,7 +66,7 @@ export default function SkillsAccordion({ skills, onOpenMoment }: Props) {
                 <View className="gap-3 px-[18px] pb-4">
                   {skill.why && (
                     <View className="rounded-[14px] bg-brand-page p-3.5">
-                      <Text className="text-[11px] font-bold tracking-[0.1em] text-[#64748B]">
+                      <Text className="text-[11px] font-bold tracking-[0.1em] text-brand-mute">
                         VÌ SAO
                       </Text>
                       <Text className="mt-1 text-[14px] leading-[21px] text-brand-ink">
@@ -73,14 +75,14 @@ export default function SkillsAccordion({ skills, onOpenMoment }: Props) {
                     </View>
                   )}
                   {!scored && (
-                    <Text className="text-[13px] leading-[19.5px] text-[#64748B]">
+                    <Text className="text-[13px] leading-[19.5px] text-brand-mute">
                       Cuộc trò chuyện này không tạo ra tình huống để thể hiện mặt này, nên chưa có
                       nhận xét. Đây không phải điểm thấp và không tính vào điểm chung.
                     </Text>
                   )}
                   {scored && skill.relatedMoments && skill.relatedMoments.length > 0 && (
                     <View className="flex-row flex-wrap items-center gap-1.5">
-                      <Text className="mr-0.5 text-xs text-[#64748B]">Thể hiện ở</Text>
+                      <Text className="mr-0.5 text-xs text-brand-mute">Thể hiện ở</Text>
                       {skill.relatedMoments.map(momentIndex => (
                         <Pressable
                           key={momentIndex}

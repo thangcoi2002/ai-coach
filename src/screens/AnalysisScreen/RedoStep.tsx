@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Animated, Pressable, Text, View } from 'react-native';
 import { Mic } from 'lucide-react-native';
 import { ANALYSIS_MOMENTS, ANALYSIS_REPORT } from '@/mock/analysis-report.mock';
+import { brand } from '@/theme/colors';
 import AvatarBadge from './ReportStep/AvatarBadge';
 
 type Props = {
@@ -139,15 +140,15 @@ export default function RedoStep({ momentIndex, onChangeMoment, onBack }: Props)
   const showMic = phase !== 'result' && phase !== 'thinking';
   const micActive = phase === 'listening';
   const micButtonStyle = {
-    backgroundColor: micActive ? '#FA6545' : 'rgba(255,255,255,0.1)',
-    borderColor: micActive ? '#FA6545' : 'rgba(255,255,255,0.35)',
+    backgroundColor: micActive ? brand.accent : 'rgba(255,255,255,0.1)',
+    borderColor: micActive ? brand.accent : 'rgba(255,255,255,0.35)',
   };
 
   const micHint =
     phase === 'listening' ? 'Chạm để dừng' : phase === 'play' ? 'Chạm để bỏ qua và nói ngay' : 'Chạm để nói';
 
   return (
-    <View className="flex-1 bg-[#0F172A] px-5">
+    <View className="flex-1 bg-brand-night px-5">
       <View className="h-[34px] flex-row items-center justify-between">
         <Pressable accessibilityRole="button" onPress={onBack}>
           <Text className="text-[13px] font-bold text-white/60">‹ Báo cáo</Text>
@@ -191,7 +192,7 @@ export default function RedoStep({ momentIndex, onChangeMoment, onBack }: Props)
 
         {showYouNew && (
           <View className="gap-1.5 rounded-[20px] bg-white p-3.5">
-            <Text className="text-[11px] font-bold tracking-[0.08em] text-[#D24C2E]">
+            <Text className="text-[11px] font-bold tracking-[0.08em] text-brand-accent-pressed">
               CÁCH BẠN VỪA NÓI
             </Text>
             <Text className="text-[15px] font-semibold leading-[22.5px] text-brand-ink">
@@ -263,7 +264,7 @@ export default function RedoStep({ momentIndex, onChangeMoment, onBack }: Props)
 
       {phase === 'thinking' && (
         <View className="mb-6 items-center">
-          <ActivityIndicator color="#FA6545" />
+          <ActivityIndicator color={brand.accent} />
         </View>
       )}
 
@@ -274,7 +275,7 @@ export default function RedoStep({ momentIndex, onChangeMoment, onBack }: Props)
             onPress={handleMicTap}
             className="h-[84px] w-[84px] items-center justify-center rounded-full border-2"
             style={micButtonStyle}>
-            <Mic size={26} color="#FFFFFF" />
+            <Mic size={26} color={brand.surface} />
           </Pressable>
           <Text className="text-[13px] font-bold text-white/70">{micHint}</Text>
           <Pressable accessibilityRole="button" onPress={() => setHintOpen(current => !current)}>

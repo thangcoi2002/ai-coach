@@ -19,6 +19,11 @@ module.exports = {
           'accent-pressed': '#D24C2E',
           'accent-tint': '#FFF1EC',
           border: '#F0F0F0',
+          night: '#0F172A',
+          prose: '#1E293B',
+          mute: '#64748B',
+          'accent-deep': '#B9553B',
+          'accent-outline': 'rgba(250,101,69,0.5)',
         },
       },
       /**

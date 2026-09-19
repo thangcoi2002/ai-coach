@@ -28,7 +28,7 @@ export default function ProcessingStep({ onWorkElsewhere, onDone }: Props) {
   }, [stepIndex]);
 
   return (
-    <View className="flex-1 bg-[#0F172A] px-[22px] pt-6">
+    <View className="flex-1 bg-brand-night px-[22px] pt-6">
       <Text className="text-[20px] font-bold tracking-[-0.02em] text-white">
         Đang xử lý nội dung
       </Text>

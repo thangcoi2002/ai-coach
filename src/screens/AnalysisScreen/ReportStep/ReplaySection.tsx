@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import type { AnalysisReport } from '@/types/analysis.type';
 import { cardClassName, cardShadow } from '@/theme/card';
+import { brand } from '@/theme/colors';
 import AvatarBadge from './AvatarBadge';
+
+/** The user's own turns are named in a muted accent, the other person's in slate. */
+const SPEAKER_COLORS = { me: brand.accentDeep, them: brand.mute };
 
 type Props = {
   report: AnalysisReport;
@@ -16,7 +20,7 @@ export default function ReplaySection({ report, onOpenMoment }: Props) {
   return (
     <View className="mt-3.5">
       <Text className="text-[19px] font-semibold tracking-[-0.02em] text-brand-ink">Diễn biến</Text>
-      <Text className="mt-1 text-[13px] text-[#64748B]">Chuyện gì đã xảy ra, thuần sự kiện.</Text>
+      <Text className="mt-1 text-[13px] text-brand-mute">Chuyện gì đã xảy ra, thuần sự kiện.</Text>
       <View className={`mt-2 p-[18px] ${cardClassName}`} style={cardShadow}>
         <View className="flex-row items-start gap-2.5">
           <View className="flex-row">
@@ -28,13 +32,15 @@ export default function ReplaySection({ report, onOpenMoment }: Props) {
               className="-ml-2 border-2 border-brand-surface"
             />
           </View>
-          <Text className="min-w-0 flex-1 text-[15px] leading-6 text-[#1E293B]">{report.brief}</Text>
+          <Text className="min-w-0 flex-1 text-[15px] leading-6 text-brand-prose">
+            {report.brief}
+          </Text>
         </View>
         <Pressable
           accessibilityRole="button"
           onPress={() => setExpanded(current => !current)}
           className="mt-3.5 min-h-11 items-center justify-center border-t border-black/[0.08]">
-          <Text className="text-[13px] font-semibold text-[#D24C2E]">
+          <Text className="text-[13px] font-semibold text-brand-accent-pressed">
             {expanded ? 'Thu gọn lời thoại' : 'Xem toàn bộ lời thoại →'}
           </Text>
         </Pressable>
@@ -65,11 +71,11 @@ export default function ReplaySection({ report, onOpenMoment }: Props) {
                     <View className="min-w-0 flex-1 pb-0.5">
                       <Text
                         className="text-[11px] font-bold"
-                        style={{ color: entry.isMe ? '#B9553B' : '#64748B' }}>
+                        style={{ color: entry.isMe ? SPEAKER_COLORS.me : SPEAKER_COLORS.them }}>
                         {entry.who}
                       </Text>
                       <Text
-                        className={`mt-0.5 text-[14px] leading-[21px] text-[#1E293B] ${
+                        className={`mt-0.5 text-[14px] leading-[21px] text-brand-prose ${
                           entry.isMe ? 'font-medium' : 'font-normal'
                         }`}>
                         {entry.text}
@@ -85,10 +91,10 @@ export default function ReplaySection({ report, onOpenMoment }: Props) {
                     accessibilityRole="button"
                     onPress={() => onOpenMoment(entry.momentIndex)}
                     className="mb-3.5 flex-row items-center gap-2.5 rounded-2xl bg-brand-accent-tint p-3">
-                    <Text className="min-w-0 flex-1 text-xs font-semibold text-[#B9553B]">
+                    <Text className="min-w-0 flex-1 text-xs font-semibold text-brand-accent-deep">
                       {entry.label}
                     </Text>
-                    <Text className="text-xs font-semibold text-[#D24C2E]">Xem ›</Text>
+                    <Text className="text-xs font-semibold text-brand-accent-pressed">Xem ›</Text>
                   </Pressable>
                 );
               }

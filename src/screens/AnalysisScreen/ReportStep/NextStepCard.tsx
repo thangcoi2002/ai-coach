@@ -1,7 +1,17 @@
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { cardClassName, cardShadow } from '@/theme/card';
+import { brand } from '@/theme/colors';
 import type { AnalysisReport } from '@/types/analysis.type';
+
+/** Accent glow under the primary CTA — warmer and wider than the shared card shadow. */
+const ctaShadow = {
+  shadowColor: brand.accent,
+  shadowOffset: { width: 0, height: 6 },
+  shadowOpacity: 0.25,
+  shadowRadius: 16,
+  elevation: 4,
+};
 
 type Props = {
   next: AnalysisReport['next'];
@@ -42,13 +52,7 @@ export default function NextStepCard({ next, onPractice }: Props) {
           accessibilityRole="button"
           onPress={onPractice}
           className="mt-1 min-h-[52px] items-center justify-center rounded-full bg-brand-accent"
-          style={{
-            shadowColor: '#FA6545',
-            shadowOffset: { width: 0, height: 6 },
-            shadowOpacity: 0.25,
-            shadowRadius: 16,
-            elevation: 4,
-          }}>
+          style={ctaShadow}>
           <Text className="text-[15px] font-semibold text-white">Luyện việc này →</Text>
         </Pressable>
       </View>

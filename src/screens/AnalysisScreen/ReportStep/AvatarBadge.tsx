@@ -10,19 +10,21 @@ type Props = {
   className?: string;
 };
 
+const BACKGROUNDS = { me: brand.ink, them: brand.accentTint };
+const INITIAL_COLORS = { me: brand.surface, them: brand.accentPressed };
+
 /** Circle-with-initial stand-in for a real avatar photo, matching HomeHeader's pattern. */
 export default function AvatarBadge({ initial, size = 32, tone = 'them', className = '' }: Props) {
-  const isMe = tone === 'me';
   return (
     <View
       className={`items-center justify-center rounded-full ${className}`}
       style={{
         width: size,
         height: size,
-        backgroundColor: isMe ? brand.ink : brand.accentTint,
+        backgroundColor: BACKGROUNDS[tone],
       }}>
       <Text
-        style={{ fontSize: size * 0.42, color: isMe ? '#FFFFFF' : brand.accentPressed }}
+        style={{ fontSize: size * 0.42, color: INITIAL_COLORS[tone] }}
         className="font-bold">
         {initial}
       </Text>

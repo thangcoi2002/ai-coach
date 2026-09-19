@@ -13,6 +13,9 @@ type Props = {
   onRehearse: (momentIndex: number) => void;
 };
 
+/** The open card is outlined in accent; the closed ones keep a plain hairline. */
+const BORDER_COLORS = { open: brand.accentOutline, closed: 'rgba(15,23,42,0.06)' };
+
 /** "Khoảnh khắc đáng xem lại" — page1's list of turning points, each opening into a
  * "rehearse it differently" prompt that hands off to the redo step. */
 export default function MomentsAccordion({
@@ -27,7 +30,7 @@ export default function MomentsAccordion({
       <Text className="text-[19px] font-semibold tracking-[-0.02em] text-brand-ink">
         Khoảnh khắc đáng xem lại
       </Text>
-      <Text className="mt-1 text-[13px] text-[#64748B]">
+      <Text className="mt-1 text-[13px] text-brand-mute">
         Những chỗ cuộc trò chuyện đổi hướng. Chạm để mở.
       </Text>
       <View className="mt-2 gap-2.5">
@@ -37,7 +40,7 @@ export default function MomentsAccordion({
             <View
               key={index}
               className="overflow-hidden rounded-[20px] border bg-brand-surface"
-              style={{ borderColor: open ? 'rgba(250,101,69,0.5)' : 'rgba(15,23,42,0.06)' }}>
+              style={{ borderColor: open ? BORDER_COLORS.open : BORDER_COLORS.closed }}>
               <Pressable
                 accessibilityRole="button"
                 onPress={() => onToggle(index)}
@@ -48,7 +51,9 @@ export default function MomentsAccordion({
                   </Text>
                   {moment.kick && (
                     <View className="rounded-full bg-brand-accent-tint px-2">
-                      <Text className="text-[11px] font-bold text-[#B9553B]">{moment.kick}</Text>
+                      <Text className="text-[11px] font-bold text-brand-accent-deep">
+                        {moment.kick}
+                      </Text>
                     </View>
                   )}
                   <View className="flex-1" />
@@ -63,7 +68,7 @@ export default function MomentsAccordion({
                 </Text>
                 <View className="mt-2.5 flex-row items-start gap-2">
                   <AvatarBadge initial="B" tone="me" size={22} />
-                  <Text className="min-w-0 flex-1 text-[14px] leading-[21px] text-[#1E293B]">
+                  <Text className="min-w-0 flex-1 text-[14px] leading-[21px] text-brand-prose">
                     “{moment.you}”
                   </Text>
                 </View>
@@ -73,10 +78,10 @@ export default function MomentsAccordion({
                   <View className="flex-row items-start gap-2 rounded-[14px] bg-brand-page p-3.5">
                     <AvatarBadge initial={themName.charAt(0)} tone="them" size={22} />
                     <View className="min-w-0 flex-1">
-                      <Text className="text-[11px] font-bold text-[#64748B]">
+                      <Text className="text-[11px] font-bold text-brand-mute">
                         {themName} phản ứng
                       </Text>
-                      <Text className="mt-0.5 text-[14px] leading-[21px] text-[#1E293B]">
+                      <Text className="mt-0.5 text-[14px] leading-[21px] text-brand-prose">
                         “{moment.react}”
                       </Text>
                     </View>
@@ -95,7 +100,7 @@ export default function MomentsAccordion({
                     </Text>
                   </View>
                   <View className="flex-row flex-wrap items-center gap-1.5">
-                    <Text className="mr-0.5 text-xs text-[#64748B]">Liên quan đến</Text>
+                    <Text className="mr-0.5 text-xs text-brand-mute">Liên quan đến</Text>
                     {moment.skills.map(name => (
                       <View key={name} className="min-h-7 justify-center rounded-full bg-brand-page px-2.5">
                         <Text className="text-xs font-semibold text-[#475568]">{name}</Text>
@@ -116,7 +121,7 @@ export default function MomentsAccordion({
                       accessibilityRole="button"
                       onPress={() => onRehearse(index)}
                       className="mt-3.5 min-h-12 flex-row items-center justify-center gap-2 rounded-full bg-brand-accent">
-                      <Mic size={14} color="#FFFFFF" />
+                      <Mic size={14} color={brand.surface} />
                       <Text className="text-[14px] font-semibold text-white">Thử nói lại</Text>
                     </Pressable>
                   </View>

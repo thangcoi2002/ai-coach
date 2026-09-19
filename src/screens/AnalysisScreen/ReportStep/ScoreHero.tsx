@@ -20,7 +20,7 @@ export default function ScoreHero({ report }: Props) {
 
   return (
     <View className="overflow-hidden rounded-[28px] border border-black/5 bg-[#FBF3EE] px-6 pb-[26px] pt-7">
-      <Text className="text-[11px] font-bold tracking-[0.12em] text-[#B9553B]">
+      <Text className="text-[11px] font-bold tracking-[0.12em] text-brand-accent-deep">
         CUỘC TRÒ CHUYỆN NÀY
       </Text>
       <View className="mt-3.5 flex-row items-baseline gap-2">
@@ -44,7 +44,7 @@ export default function ScoreHero({ report }: Props) {
           {report.score.toFixed(1).replace('.', ',')} trên 10
         </Text>
       </View>
-      <Text className="mt-5 text-[17px] font-medium leading-[24.65px] tracking-[-0.01em] text-[#1E293B]">
+      <Text className="mt-5 text-[17px] font-medium leading-[24.65px] tracking-[-0.01em] text-brand-prose">
         {report.overview}
       </Text>
       <View className="mt-5 flex-row items-center gap-2.5 border-t border-black/[0.08] pt-4">
@@ -53,7 +53,7 @@ export default function ScoreHero({ report }: Props) {
           <Text className="text-[13px] font-semibold leading-[17.5px] text-brand-ink">
             {report.title}
           </Text>
-          <Text className="mt-0.5 text-xs text-[#64748B]">{report.meta}</Text>
+          <Text className="mt-0.5 text-xs text-brand-mute">{report.meta}</Text>
         </View>
       </View>
     </View>
